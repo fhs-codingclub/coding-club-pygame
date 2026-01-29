@@ -209,13 +209,13 @@ class BattleSystem:
         
         if self.state == "menu":
             if event.key == pygame.K_UP:
-                self.selected_option = (self.selected_option - 2) % 4
-            elif event.key == pygame.K_DOWN:
-                self.selected_option = (self.selected_option + 2) % 4
-            elif event.key == pygame.K_LEFT:
                 self.selected_option = (self.selected_option - 1) % 4
-            elif event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_DOWN:
                 self.selected_option = (self.selected_option + 1) % 4
+            elif event.key == pygame.K_LEFT:
+                self.selected_option = (self.selected_option - 2) % 4
+            elif event.key == pygame.K_RIGHT:
+                self.selected_option = (self.selected_option + 2) % 4
             elif event.key in (pygame.K_RETURN, pygame.K_z):
                 self.execute_action(self.menu_options[self.selected_option])
         
