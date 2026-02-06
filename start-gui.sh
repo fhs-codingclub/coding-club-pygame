@@ -11,6 +11,8 @@ sudo apt-get update -y
 sudo apt-get install -y xvfb x11vnc fluxbox websockify novnc
 
 echo "Starting virtual display..."
+export XDG_RUNTIME_DIR=/tmp/runtime-$(whoami)
+mkdir -p "$XDG_RUNTIME_DIR"
 Xvfb :1 -screen 0 1024x768x24 &
 export DISPLAY=:1
 fluxbox &
@@ -24,4 +26,9 @@ websockify --web=/usr/share/novnc 6080 localhost:5900 &
 echo ""
 echo "GUI environment is ready!"
 echo "Go to your Codespaces Ports tab, set port 6080 to Public, and open the link."
-echo "Then run your game"
+echo ""
+echo "Before running your game, set these in your terminal:"
+echo "  export DISPLAY=:1"
+echo "  export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
+echo ""
+echo "Then run: python main.py"
