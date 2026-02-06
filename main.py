@@ -7,7 +7,7 @@ from menu import main_menu
 start = True
 
 
-def play():
+def play(screen):
     pygame.display.set_caption("DEBUG!!!")
     # Run the transition/loader second MWAHAHAHAHAHAHHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAAHAHAHAhAHAHAHAhAHAHAHAHAHAhAHAHAHAhAHAHAHAHAHAHHAHAHAHAHAHAHAHAHAHAHAHA Help me
     if run_transition(screen):
@@ -22,7 +22,7 @@ def main():
 
     #Run the main menu first
     if start:
-        my_menu = main_menu(screen, play)
+        my_menu = main_menu(screen, lambda: play(screen))
         
         run_menu = True
         while my_menu.is_enabled():
@@ -37,7 +37,7 @@ def main():
                 pygame.display.update()
             else:
                 run_menu = False
-    play()
+    play(screen)
 
 
 if __name__ == "__main__":

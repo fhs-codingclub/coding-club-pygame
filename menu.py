@@ -28,7 +28,7 @@ def main_menu(surface, start_callback):
 	#UI ELEMENTS
 	La_carte.add.label("SUP DUDE", font_size=30)
 	La_carte.add.vertical_margin(20)
-	La_carte.add.button("Start Game", La_carte.disable)
+	La_carte.add.button("Start Game", start_callback)
 	La_carte.add.button("Options", lambda: print("Options Menu Open"))
 	La_carte.add.button("QUIT", pygame_menu.events.EXIT)
 	
