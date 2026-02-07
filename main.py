@@ -9,10 +9,19 @@ from overworld import run_overworld
 def start_battle(screen):
     """Handles the transition and battle sequence"""
     pygame.mixer.music.fadeout(1000)  
-
+    pygame.mixer.music.load("assets/copyrightedplaceholdermusic.mp3")
+    pygame.mixer.music.play(-1)
     # If transition completed (didn't quit), start the battle
     if run_transition(screen):
-        run_battle(screen)
+        result = run_battle(screen)
+        # After battle, restore/continue overworld music
+        pygame.mixer.music.fadeout(500)
+        try:
+            pygame.mixer.music.load("assets/copyrightedworldmusic.mp3")
+            pygame.mixer.music.play(-1)
+        except Exception:
+            pass
+        return result
 
 def play(screen):
     """Main game loop - runs the overworld"""
@@ -20,8 +29,8 @@ def play(screen):
     pygame.mixer.music.fadeout(1000) 
 
     # Optional: Change music for overworld
-    # pygame.mixer.music.load("assets/Overworld-Theme.mp3")
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.music.load("assets/copyrightedworldmusic.mp3")
+    pygame.mixer.music.play(-1)
     
     while True:
         result = run_overworld(screen)

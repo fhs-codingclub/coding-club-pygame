@@ -234,7 +234,9 @@ class BattleSystem:
         
         elif self.state in ("victory", "defeat", "run_away"):
             if event.key in (pygame.K_RETURN, pygame.K_z):
-                self.reset_battle()
+                # Signal that the battle is finished and store the result
+                self.finished = self.state
+                self.running = False
     
     def execute_action(self, action):
         """Execute the selected action"""
@@ -355,20 +357,24 @@ class BattleSystem:
     
     def run(self):
         """Main game loop"""
-        running = True
-        while running:
+        self.running = True
+        self.finished = None
+        while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    # Treat quit as finishing with defeat (caller can interpret)
+                    self.finished = "QUIT"
+                    self.running = False
                 self.handle_input(event)
-            
+
             self.update()
             self.draw()
-            
+
             pygame.display.flip()
             self.clock.tick(60)
-        
-        pygame.quit()
+
+        # Return the outcome to the caller so the overworld can resume
+        return self.finished
 
 
 def run_battle(game_screen):
@@ -378,7 +384,7 @@ def run_battle(game_screen):
     init_fonts()
     pygame.display.set_caption("yes we're fighting ryan gosling")
     battle = BattleSystem()
-    battle.run()
+    return battle.run()
 
 
 # Run the battle!
