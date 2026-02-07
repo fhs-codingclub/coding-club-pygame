@@ -57,7 +57,7 @@ class Combatant:
 class Player(Combatant):
     def __init__(self):
         super().__init__("Hero", max_hp=100, attack=15, defense=5)
-        self.items = {"Hamburger": 3, "Lifeup": 1}
+        self.items = {"Hamburger": 3, "Lifeup": 1, "YO MAMA": 10}
     
     def use_item(self, item_name):
         if item_name in self.items and self.items[item_name] > 0:
@@ -66,6 +66,8 @@ class Player(Combatant):
                 heal = 30
             elif item_name == "Lifeup":
                 heal = 60
+            elif item_name == "YO MAMA":
+                heal = 10
             else:
                 heal = 20
             self.hp = min(self.max_hp, self.hp + heal)
