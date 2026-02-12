@@ -1,3 +1,2 @@
-renpy-encyclopaedia
+renpy
 pygame-ce
-pygame_menu

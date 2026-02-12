@@ -57,7 +57,7 @@ class Combatant:
 class Player(Combatant):
     def __init__(self):
         super().__init__("Hero", max_hp=100, attack=15, defense=5)
-        self.items = {"Hamburger": 3, "Lifeup": 1, "YO MAMA": 10}
+        self.items = {"Hamburger": 3, "Lifeup": 1}
     
     def use_item(self, item_name):
         if item_name in self.items and self.items[item_name] > 0:
@@ -66,8 +66,6 @@ class Player(Combatant):
                 heal = 30
             elif item_name == "Lifeup":
                 heal = 60
-            elif item_name == "YO MAMA":
-                heal = 10
             else:
                 heal = 20
             self.hp = min(self.max_hp, self.hp + heal)
@@ -234,9 +232,7 @@ class BattleSystem:
         
         elif self.state in ("victory", "defeat", "run_away"):
             if event.key in (pygame.K_RETURN, pygame.K_z):
-                # Signal that the battle is finished and store the result
-                self.finished = self.state
-                self.running = False
+                self.reset_battle()
     
     def execute_action(self, action):
         """Execute the selected action"""
@@ -357,24 +353,20 @@ class BattleSystem:
     
     def run(self):
         """Main game loop"""
-        self.running = True
-        self.finished = None
-        while self.running:
+        running = True
+        while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # Treat quit as finishing with defeat (caller can interpret)
-                    self.finished = "QUIT"
-                    self.running = False
+                    running = False
                 self.handle_input(event)
-
+            
             self.update()
             self.draw()
-
+            
             pygame.display.flip()
             self.clock.tick(60)
-
-        # Return the outcome to the caller so the overworld can resume
-        return self.finished
+        
+        pygame.quit()
 
 
 def run_battle(game_screen):
@@ -384,7 +376,7 @@ def run_battle(game_screen):
     init_fonts()
     pygame.display.set_caption("yes we're fighting ryan gosling")
     battle = BattleSystem()
-    return battle.run()
+    battle.run()
 
 
 # Run the battle!
