@@ -151,34 +151,49 @@ class BattleSystem:
         screen.blit(enemy_name, (SCREEN_WIDTH // 2 - 30, 190))
     
     def draw_menu(self):
-        """Draw the battle menu"""
-        # Main text window
-        self.draw_window((20, 300, SCREEN_WIDTH - 40, 80))
-        
-        # Menu window
-        self.draw_window((20, 390, 300, 80))
-        
-        # Player stats window
-        self.draw_window((330, 390, SCREEN_WIDTH - 350, 80))
-        
-        # Draw message or default text
+        """Draw the battle menu with wood-themed UI, attacks left, items right"""
+        # Draw wood bottom bar
+        wood_color = (120, 80, 40)
+        wood_dark = (80, 50, 20)
+        wood_circle = (140, 100, 60)
+        pygame.draw.rect(screen, wood_color, (0, SCREEN_HEIGHT - 120, SCREEN_WIDTH, 120))
+        pygame.draw.rect(screen, wood_dark, (0, SCREEN_HEIGHT - 120, SCREEN_WIDTH, 120), 8)
+        # Draw wood circle in center
+        pygame.draw.circle(screen, wood_circle, (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60), 80)
+        pygame.draw.circle(screen, wood_dark, (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60), 80, 8)
+        # Draw wood lines (left)
+        for i in range(0, 220, 40):
+            pygame.draw.line(screen, wood_dark, (20, SCREEN_HEIGHT - 120 + i // 4), (220, SCREEN_HEIGHT - 120 + i // 4), 3)
+        # Draw wood lines (right)
+        for i in range(0, 220, 40):
+            pygame.draw.line(screen, wood_dark, (SCREEN_WIDTH - 220, SCREEN_HEIGHT - 120 + i // 4), (SCREEN_WIDTH - 20, SCREEN_HEIGHT - 120 + i // 4), 3)
+        # Draw wood grid (right)
+        for i in range(0, 100, 25):
+            pygame.draw.line(screen, wood_dark, (SCREEN_WIDTH - 120 + i, SCREEN_HEIGHT - 120), (SCREEN_WIDTH - 120 + i, SCREEN_HEIGHT - 20), 2)
+        for i in range(0, 100, 25):
+            pygame.draw.line(screen, wood_dark, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 120 + i), (SCREEN_WIDTH - 20, SCREEN_HEIGHT - 120 + i), 2)
+
+        # Draw message or default text in center circle
         if self.message:
             msg_text = font.render(self.message, True, WHITE)
-            screen.blit(msg_text, (40, 330))
+            text_rect = msg_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
+            screen.blit(msg_text, text_rect)
         else:
             msg_text = font.render("What will you do?", True, WHITE)
-            screen.blit(msg_text, (40, 330))
-        
-        # Draw menu options
+            text_rect = msg_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
+            screen.blit(msg_text, text_rect)
+
+        # Draw attacks (menu options) on left
         if self.state == "menu":
             for i, option in enumerate(self.menu_options):
                 color = YELLOW if i == self.selected_option else WHITE
                 prefix = "> " if i == self.selected_option else "  "
                 text = small_font.render(prefix + option, True, color)
-                x = 40 if i < 2 else 160
-                y = 410 if i % 2 == 0 else 440
+                x = 40
+                y = SCREEN_HEIGHT - 110 + i * 30
                 screen.blit(text, (x, y))
-        
+
+        # Draw inventory/items on right
         elif self.state == "items":
             if self.item_options:
                 for i, item in enumerate(self.item_options):
@@ -186,21 +201,23 @@ class BattleSystem:
                     color = YELLOW if i == self.selected_item else WHITE
                     prefix = "> " if i == self.selected_item else "  "
                     text = small_font.render(f"{prefix}{item} x{count}", True, color)
-                    screen.blit(text, (40, 410 + i * 25))
+                    x = SCREEN_WIDTH - 220
+                    y = SCREEN_HEIGHT - 110 + i * 30
+                    screen.blit(text, (x, y))
             else:
                 text = small_font.render("No items!", True, WHITE)
-                screen.blit(text, (40, 410))
-        
-        # Draw player stats
+                x = SCREEN_WIDTH - 220
+                y = SCREEN_HEIGHT - 110
+                screen.blit(text, (x, y))
+
+        # Draw player stats above right bar
         name_text = small_font.render(self.player.name, True, WHITE)
-        screen.blit(name_text, (350, 400))
-        hp_text = small_font.render(f"HP: {self.player.hp}/{self.player.max_hp}", True, 
-                                    GREEN if self.player.hp > 30 else RED)
-        screen.blit(hp_text, (350, 430))
-        
+        screen.blit(name_text, (SCREEN_WIDTH - 220, SCREEN_HEIGHT - 150))
+        hp_text = small_font.render(f"HP: {self.player.hp}/{self.player.max_hp}", True, GREEN if self.player.hp > 30 else RED)
+        screen.blit(hp_text, (SCREEN_WIDTH - 220, SCREEN_HEIGHT - 130))
         if self.player.defending:
             def_text = small_font.render("DEFENDING", True, LIGHT_BLUE)
-            screen.blit(def_text, (450, 430))
+            screen.blit(def_text, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 130))
     
     def handle_input(self, event):
         """Handle keyboard input"""
