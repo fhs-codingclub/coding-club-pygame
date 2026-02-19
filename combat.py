@@ -185,27 +185,28 @@ class BattleSystem:
         for r in range(10, circle_radius, 15):
             pygame.draw.circle(screen, wood_grid, circle_center, r, 2)
 
-        # Layout Fix
-
-        padding = 20
-        left_limit = circle_center[0] - circle_radius - padding
-        right_limit = circle_center[0] + circle_radius + padding
-
+        # Layout — compute available columns on each side of the circle
+        padding = 10
         left_x = padding
-        left_width = left_limit - left_x
+        left_width = max((circle_center[0] - circle_radius) - padding * 2, 10)
 
-        right_x = right_limit
-        right_width = SCREEN_WIDTH - padding - right_x
+        right_x = circle_center[0] + circle_radius + padding
+        right_width = max(SCREEN_WIDTH - right_x - padding, 10)
 
-        button_h = 45
-        gap = 12
+        # Button sizing: fit all menu buttons vertically inside the panel
+        n = len(self.menu_options)
+        available_h = panel_height - 20          # 10px top+bottom margin
+        gap = 8
+        button_h = min(45, (available_h - gap * (n - 1)) // n)
+        # Recompute gap so buttons are evenly spaced
+        total_btn_h = button_h * n
+        gap = (available_h - total_btn_h) // max(n - 1, 1)
+        gap = max(4, min(gap, 16))
 
-        # Left buttons
-        total_height = len(self.menu_options) * button_h + \
-            (len(self.menu_options) - 1) * gap
-
+        total_height = total_btn_h + gap * (n - 1)
         start_y = panel_top + (panel_height - total_height) // 2
 
+        # Left buttons (menu actions)
         for i, option in enumerate(self.menu_options):
             y = start_y + i * (button_h + gap)
 
@@ -217,7 +218,7 @@ class BattleSystem:
                 screen,
                 color,
                 (left_x, y, left_width, button_h),
-                border_radius=12
+                border_radius=10
             )
 
             pygame.draw.rect(
@@ -225,7 +226,7 @@ class BattleSystem:
                 wood_dark,
                 (left_x, y, left_width, button_h),
                 2,
-                border_radius=12
+                border_radius=10
             )
 
             text = small_font.render(option, True, WHITE)
@@ -240,31 +241,30 @@ class BattleSystem:
         # Right item buttons
         if self.state == "items":
             num_items = len(self.item_options) if self.item_options else 1
-
-            total_height = num_items * button_h + \
-                (num_items - 1) * gap
-
-            start_y = panel_top + (panel_height - total_height) // 2
+            ni = num_items
+            item_button_h = min(45, (available_h - gap * (ni - 1)) // ni)
+            item_total_h = item_button_h * ni + gap * (ni - 1)
+            item_start_y = panel_top + (panel_height - item_total_h) // 2
 
             if self.item_options:
                 for i, item in enumerate(self.item_options):
-                    y = start_y + i * (button_h + gap)
+                    y = item_start_y + i * (item_button_h + gap)
 
                     color = wood_light if i == self.selected_item else wood_base
 
                     pygame.draw.rect(
                         screen,
                         color,
-                        (right_x, y, right_width, button_h),
-                        border_radius=12
+                        (right_x, y, right_width, item_button_h),
+                        border_radius=10
                     )
 
                     pygame.draw.rect(
                         screen,
                         wood_dark,
-                        (right_x, y, right_width, button_h),
+                        (right_x, y, right_width, item_button_h),
                         2,
-                        border_radius=12
+                        border_radius=10
                     )
 
                     text = small_font.render(
@@ -277,21 +277,22 @@ class BattleSystem:
                         text,
                         text.get_rect(center=(
                             right_x + right_width // 2,
-                            y + button_h // 2
+                            y + item_button_h // 2
                         ))
                     )
 
-        # Player stats
-        stats_y = panel_top + 10
-        name_text = small_font.render(self.player.name, True, WHITE)
-        screen.blit(name_text, (right_x, stats_y))
+        # Player stats (shown when not in item menu, so they don't overlap)
+        if self.state != "items":
+            stats_y = panel_top + 10
+            name_text = small_font.render(self.player.name, True, WHITE)
+            screen.blit(name_text, (right_x, stats_y))
 
-        hp_text = small_font.render(
-            f"HP: {self.player.hp}/{self.player.max_hp}",
-            True,
-            GREEN if self.player.hp > 30 else RED
-        )
-        screen.blit(hp_text, (right_x, stats_y + 25))
+            hp_text = small_font.render(
+                f"HP: {self.player.hp}/{self.player.max_hp}",
+                True,
+                GREEN if self.player.hp > 30 else RED
+            )
+            screen.blit(hp_text, (right_x, stats_y + 25))
 
         # Center message
         msg = self.message if self.message else "What will you do?"
