@@ -151,73 +151,86 @@ class BattleSystem:
         screen.blit(enemy_name, (SCREEN_WIDTH // 2 - 30, 190))
     
     def draw_menu(self):
-        """Draw the battle menu with wood-themed UI, attacks left, items right"""
-        # Draw wood bottom bar
-        wood_color = (120, 80, 40)
+        """Draw the battle menu to match wood feel and layout from image, fit screen"""
+        # Colors for wood theme
+        wood_base = (120, 80, 40)
         wood_dark = (80, 50, 20)
+        wood_light = (160, 120, 60)
         wood_circle = (140, 100, 60)
-        pygame.draw.rect(screen, wood_color, (0, SCREEN_HEIGHT - 120, SCREEN_WIDTH, 120))
-        pygame.draw.rect(screen, wood_dark, (0, SCREEN_HEIGHT - 120, SCREEN_WIDTH, 120), 8)
-        # Draw wood circle in center
-        pygame.draw.circle(screen, wood_circle, (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60), 80)
-        pygame.draw.circle(screen, wood_dark, (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60), 80, 8)
-        # Draw wood lines (left)
-        for i in range(0, 220, 40):
-            pygame.draw.line(screen, wood_dark, (20, SCREEN_HEIGHT - 120 + i // 4), (220, SCREEN_HEIGHT - 120 + i // 4), 3)
-        # Draw wood lines (right)
-        for i in range(0, 220, 40):
-            pygame.draw.line(screen, wood_dark, (SCREEN_WIDTH - 220, SCREEN_HEIGHT - 120 + i // 4), (SCREEN_WIDTH - 20, SCREEN_HEIGHT - 120 + i // 4), 3)
-        # Draw wood grid (right)
-        for i in range(0, 100, 25):
-            pygame.draw.line(screen, wood_dark, (SCREEN_WIDTH - 120 + i, SCREEN_HEIGHT - 120), (SCREEN_WIDTH - 120 + i, SCREEN_HEIGHT - 20), 2)
-        for i in range(0, 100, 25):
-            pygame.draw.line(screen, wood_dark, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 120 + i), (SCREEN_WIDTH - 20, SCREEN_HEIGHT - 120 + i), 2)
+        wood_grid = (100, 70, 40)
+        # Panel height
+        panel_height = 180
+        # Draw wood bottom bar
+        pygame.draw.rect(screen, wood_base, (0, SCREEN_HEIGHT - panel_height, SCREEN_WIDTH, panel_height))
+        pygame.draw.rect(screen, wood_dark, (0, SCREEN_HEIGHT - panel_height, SCREEN_WIDTH, panel_height), 8)
+
+        # Draw wood circle in center bottom
+        circle_radius = 110
+        circle_center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - panel_height // 2)
+        pygame.draw.circle(screen, wood_circle, circle_center, circle_radius)
+        pygame.draw.circle(screen, wood_dark, circle_center, circle_radius, 8)
+        # Draw concentric rings for wood effect
+        for r in range(10, circle_radius, 15):
+            pygame.draw.circle(screen, wood_grid, circle_center, r, 2)
+
+        # ...removed grid drawing for cleaner wood UI...
+
+
+        # Button layout values
+        button_w = 180
+        button_h = 40
+        button_gap = 10
+        left_x = 40
+        left_y_start = SCREEN_HEIGHT - panel_height + 20
+        for i, option in enumerate(self.menu_options):
+            y = left_y_start + i * (button_h + button_gap)
+            color = wood_light if self.state == "menu" and i == self.selected_option else wood_base
+            pygame.draw.rect(screen, color, (left_x, y, button_w, button_h), border_radius=12)
+            pygame.draw.rect(screen, wood_dark, (left_x, y, button_w, button_h), 2, border_radius=12)
+            text = small_font.render(option, True, WHITE)
+            text_rect = text.get_rect(center=(left_x + button_w // 2, y + button_h // 2))
+            screen.blit(text, text_rect)
+
+        # Draw inventory/items as wood-themed buttons on right
+        right_x = SCREEN_WIDTH - button_w - 40
+        right_y_start = SCREEN_HEIGHT - panel_height + 20
+        if self.state == "items":
+            if self.item_options:
+                for i, item in enumerate(self.item_options):
+                    y = right_y_start + i * (button_h + button_gap)
+                    color = wood_light if i == self.selected_item else wood_base
+                    pygame.draw.rect(screen, color, (right_x, y, button_w, button_h), border_radius=12)
+                    pygame.draw.rect(screen, wood_dark, (right_x, y, button_w, button_h), 2, border_radius=12)
+                    text = small_font.render(f"{item} x{self.player.items[item]}", True, WHITE)
+                    text_rect = text.get_rect(center=(right_x + button_w // 2, y + button_h // 2))
+                    screen.blit(text, text_rect)
+            else:
+                y = right_y_start
+                pygame.draw.rect(screen, wood_base, (right_x, y, button_w, button_h), border_radius=12)
+                pygame.draw.rect(screen, wood_dark, (right_x, y, button_w, button_h), 2, border_radius=12)
+                text = small_font.render("No items!", True, WHITE)
+                text_rect = text.get_rect(center=(right_x + button_w // 2, y + button_h // 2))
+                screen.blit(text, text_rect)
+
+        # Draw player stats above right panel
+        stats_y = SCREEN_HEIGHT - panel_height + 10
+        name_text = small_font.render(self.player.name, True, WHITE)
+        screen.blit(name_text, (right_x, stats_y))
+        hp_text = small_font.render(f"HP: {self.player.hp}/{self.player.max_hp}", True, GREEN if self.player.hp > 30 else RED)
+        screen.blit(hp_text, (right_x, stats_y + 25))
+        if self.player.defending:
+            def_text = small_font.render("DEFENDING", True, wood_light)
+            screen.blit(def_text, (right_x + 100, stats_y + 25))
 
         # Draw message or default text in center circle
         if self.message:
             msg_text = font.render(self.message, True, WHITE)
-            text_rect = msg_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
+            text_rect = msg_text.get_rect(center=circle_center)
             screen.blit(msg_text, text_rect)
         else:
             msg_text = font.render("What will you do?", True, WHITE)
-            text_rect = msg_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
+            text_rect = msg_text.get_rect(center=circle_center)
             screen.blit(msg_text, text_rect)
-
-        # Draw attacks (menu options) on left
-        if self.state == "menu":
-            for i, option in enumerate(self.menu_options):
-                color = YELLOW if i == self.selected_option else WHITE
-                prefix = "> " if i == self.selected_option else "  "
-                text = small_font.render(prefix + option, True, color)
-                x = 40
-                y = SCREEN_HEIGHT - 110 + i * 30
-                screen.blit(text, (x, y))
-
-        # Draw inventory/items on right
-        elif self.state == "items":
-            if self.item_options:
-                for i, item in enumerate(self.item_options):
-                    count = self.player.items[item]
-                    color = YELLOW if i == self.selected_item else WHITE
-                    prefix = "> " if i == self.selected_item else "  "
-                    text = small_font.render(f"{prefix}{item} x{count}", True, color)
-                    x = SCREEN_WIDTH - 220
-                    y = SCREEN_HEIGHT - 110 + i * 30
-                    screen.blit(text, (x, y))
-            else:
-                text = small_font.render("No items!", True, WHITE)
-                x = SCREEN_WIDTH - 220
-                y = SCREEN_HEIGHT - 110
-                screen.blit(text, (x, y))
-
-        # Draw player stats above right bar
-        name_text = small_font.render(self.player.name, True, WHITE)
-        screen.blit(name_text, (SCREEN_WIDTH - 220, SCREEN_HEIGHT - 150))
-        hp_text = small_font.render(f"HP: {self.player.hp}/{self.player.max_hp}", True, GREEN if self.player.hp > 30 else RED)
-        screen.blit(hp_text, (SCREEN_WIDTH - 220, SCREEN_HEIGHT - 130))
-        if self.player.defending:
-            def_text = small_font.render("DEFENDING", True, LIGHT_BLUE)
-            screen.blit(def_text, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 130))
     
     def handle_input(self, event):
         """Handle keyboard input"""
