@@ -394,19 +394,36 @@ class BattleSystem:
         if self.message_timer > 0:
             self.message_timer -= 1
             if self.message_timer == 0:
+                # Check if enemy died
+                if not self.enemy.is_alive():
+                    self.message = "Enemy defeated!"
+                    self.state = "victory"
+                    self.message_timer = 120  # Show victory message for 2 seconds
+                    return
+                # Check if player died
+                if not self.player.is_alive():
+                    self.message = "You were defeated..."
+                    self.state = "defeat"
+                    self.message_timer = 120
+                    return
                 self.message = ""
                 self.state = "menu"
+        
+        # After victory/defeat message finishes, end the battle
+        if self.state in ("victory", "defeat") and self.message_timer == 0:
+            self.battle_over = True
 
     def draw(self):
         self.draw_battle_scene()
         self.draw_menu()
 
     def run(self):
+        self.battle_over = False
         running = True
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    return "QUIT"
                 self.handle_input(event)
 
             self.update()
@@ -414,8 +431,14 @@ class BattleSystem:
 
             pygame.display.flip()
             self.clock.tick(60)
-
-        pygame.quit()
+            
+            if self.battle_over:
+                if self.state == "victory":
+                    return "WIN"
+                elif self.state == "defeat":
+                    return "LOSE"
+        
+        return "QUIT"
 
 
 def run_battle(game_screen):
@@ -424,7 +447,7 @@ def run_battle(game_screen):
     init_fonts()
     pygame.display.set_caption("yes we're fighting ryan gosling")
     battle = BattleSystem()
-    battle.run()
+    return battle.run()
 
 
 if __name__ == "__main__":
@@ -433,5 +456,6 @@ if __name__ == "__main__":
     pygame.display.set_caption("yes we're fighting ryan gosling")
     init_fonts()
     battle = BattleSystem()
-    battle.run()
+    result = battle.run()
+    print(f"Battle result: {result}")
     pygame.quit()
