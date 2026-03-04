@@ -355,6 +355,20 @@ class BattleSystem:
             self.message_timer = 60
             self.state = "animating"
 
+    def use_item(self, item_name):
+        """Use an item from the player's inventory."""
+        heal = self.player.use_item(item_name)
+        if heal > 0:
+            self.message = f"Used {item_name}! Healed {heal} HP!"
+        else:
+            self.message = "No effect!"
+        self.message_timer = 60
+        self.state = "animating"
+        # Update item list in case item ran out
+        self.item_options = [
+            k for k, v in self.player.items.items() if v > 0
+        ]
+
     def update(self):
         if self.message_timer > 0:
             self.message_timer -= 1
