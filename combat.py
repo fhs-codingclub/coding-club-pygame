@@ -3,6 +3,11 @@
 import pygame
 import random
 import os
+import sys
+
+# Add py folder to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
+from dice import roll_attack, calculate_damage, roll_dice
 
 # Screen settings
 SCREEN_WIDTH = 640
@@ -335,10 +340,26 @@ class BattleSystem:
         self.player.defending = False
 
         if action == "Attack":
-            damage = self.player.attack + random.randint(-3, 5)
-            actual_damage = self.enemy.take_damage(damage)
-            self.message = f"You attack! {actual_damage} damage!"
-            self.message_timer = 60
+            # Roll D20 to determine hit quality
+            attack_result = roll_attack()
+            roll = attack_result['roll']
+            
+            if attack_result['result_type'] == 'critical_fail':
+                # Critical fail - hurt yourself!
+                self_damage = sum(roll_dice(2, 6))
+                self.player.hp = max(0, self.player.hp - self_damage)
+                self.message = f"Roll: {roll} - Critical Fail! You hurt yourself for {self_damage}!"
+            elif attack_result['result_type'] == 'miss':
+                # Miss - no damage
+                self.message = f"Roll: {roll} - Miss!"
+            else:
+                # Hit - calculate damage based on roll quality
+                damage = calculate_damage(attack_result, self.player.attack)
+                actual_damage = self.enemy.take_damage(damage)
+                self.message = f"Roll: {roll} - {attack_result['message']} {actual_damage} damage!"
+                self.shake_timer = 10  # Screen shake on hit
+            
+            self.message_timer = 90
             self.state = "animating"
 
         elif action == "Items":
