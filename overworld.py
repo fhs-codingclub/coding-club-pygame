@@ -9,6 +9,12 @@ from inventory import InventorySystem
 
 WIDTH = 400
 HEIGHT = 300
+TILE_SIZE = 20
+# Define a larger world so the camera has room to scroll
+WORLD_COLS = 60
+WORLD_ROWS = 45
+WORLD_WIDTH = WORLD_COLS * TILE_SIZE
+WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 
 def run_overworld(screen, inventory=None):
     """Run the overworld screen.
@@ -25,14 +31,32 @@ def run_overworld(screen, inventory=None):
         inventory = InventorySystem(WIDTH, HEIGHT)
     
     # --- Local Settings ---
-    TILE_SIZE = 20
-    player_x_grid, player_y_grid = 0, 0
-    target_x_grid, target_y_grid = 5, 5
+    player_x_grid = WORLD_COLS // 2
+    player_y_grid = WORLD_ROWS // 2
+    target_x_grid, target_y_grid = player_x_grid + 5, player_y_grid
     player_x = player_x_grid * TILE_SIZE
     player_y = player_y_grid * TILE_SIZE
     moving = False
     direction = None
     PLAYER_SPEED = 2
+    camera_x = 0
+    camera_y = 0
+    
+    def clamp_camera(px, py):
+        """Center camera on the player while staying inside world bounds."""
+        half_tile = TILE_SIZE // 2
+        cam_x = int(px + half_tile - WIDTH // 2)
+        cam_y = int(py + half_tile - HEIGHT // 2)
+        max_cam_x = max(0, WORLD_WIDTH - WIDTH)
+        max_cam_y = max(0, WORLD_HEIGHT - HEIGHT)
+        cam_x = max(0, min(max_cam_x, cam_x))
+        cam_y = max(0, min(max_cam_y, cam_y))
+        return cam_x, cam_y
+    
+    # Ensure target stays in bounds
+    target_x_grid = min(WORLD_COLS - 1, max(0, target_x_grid))
+    target_y_grid = min(WORLD_ROWS - 1, max(0, target_y_grid))
+    camera_x, camera_y = clamp_camera(player_x, player_y)
     
     # Random encounter settings
     ENCOUNTER_CHANCE = 0.10  # 10% chance per step (adjust as needed)
@@ -55,11 +79,11 @@ def run_overworld(screen, inventory=None):
             if event.type == pygame.KEYDOWN and not moving and not inventory.is_open:
                 if event.key == pygame.K_LEFT and player_x_grid > 0:
                     moving, direction = True, "left"
-                elif event.key == pygame.K_RIGHT and player_x_grid < (WIDTH//TILE_SIZE)-1:
+                elif event.key == pygame.K_RIGHT and player_x_grid < WORLD_COLS - 1:
                     moving, direction = True, "right"
                 elif event.key == pygame.K_UP and player_y_grid > 0:
                     moving, direction = True, "up"
-                elif event.key == pygame.K_DOWN and player_y_grid < (HEIGHT//TILE_SIZE)-1:
+                elif event.key == pygame.K_DOWN and player_y_grid < WORLD_ROWS - 1:
                     moving, direction = True, "down"
                 
                 # TEST: Press SPACE to force a battle
@@ -97,22 +121,47 @@ def run_overworld(screen, inventory=None):
                 if random.random() < ENCOUNTER_CHANCE:
                     return ("RANDOM_BATTLE", inventory)
         
+        # Update camera each frame
+        camera_x, camera_y = clamp_camera(player_x, player_y)
+        
         # Check for Battle Trigger (special tile)
         if player_x_grid == target_x_grid and player_y_grid == target_y_grid and not moving:
             return ("START_BATTLE", inventory)
         
         # Draw Everything
-        # Draw grass pattern
-        for gx in range(0, WIDTH, TILE_SIZE):
-            for gy in range(0, HEIGHT, TILE_SIZE):
-                if (gx//TILE_SIZE + gy//TILE_SIZE) % 2 == 0:
-                    pygame.draw.rect(screen, (44, 149, 44), (gx, gy, TILE_SIZE, TILE_SIZE))
+        # Draw grass pattern (only tiles visible in the current camera view)
+        start_col = max(0, camera_x // TILE_SIZE)
+        end_col = min(WORLD_COLS, (camera_x + WIDTH) // TILE_SIZE + 2)
+        start_row = max(0, camera_y // TILE_SIZE)
+        end_row = min(WORLD_ROWS, (camera_y + HEIGHT) // TILE_SIZE + 2)
+        for gx in range(start_col, end_col):
+            for gy in range(start_row, end_row):
+                if (gx + gy) % 2 == 0:
+                    screen_x = gx * TILE_SIZE - camera_x
+                    screen_y = gy * TILE_SIZE - camera_y
+                    pygame.draw.rect(
+                        screen,
+                        (44, 149, 44),
+                        (screen_x, screen_y, TILE_SIZE, TILE_SIZE)
+                    )
         
         # Draw battle trigger tile (red = special battle spot)
-        pygame.draw.rect(screen, (200, 50, 50), (target_x_grid*TILE_SIZE, target_y_grid*TILE_SIZE, TILE_SIZE, TILE_SIZE))
+        target_screen_x = target_x_grid * TILE_SIZE - camera_x
+        target_screen_y = target_y_grid * TILE_SIZE - camera_y
+        pygame.draw.rect(
+            screen,
+            (200, 50, 50),
+            (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE)
+        )
         
         # Draw player
-        pygame.draw.rect(screen, (50, 100, 200), (player_x, player_y, TILE_SIZE, TILE_SIZE))
+        player_screen_x = player_x - camera_x
+        player_screen_y = player_y - camera_y
+        pygame.draw.rect(
+            screen,
+            (50, 100, 200),
+            (player_screen_x, player_screen_y, TILE_SIZE, TILE_SIZE)
+        )
         
         # Draw UI text
         font = pygame.font.Font(None, 24)
