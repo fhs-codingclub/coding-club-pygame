@@ -62,7 +62,22 @@ def run_overworld(screen, inventory=None):
     ENCOUNTER_CHANCE = 0.10  # 10% chance per step (adjust as needed)
     
     clock = pygame.time.Clock()
-    
+    # --- Load player sprite once (falls back to a rectangle if not found) ---
+    player_sprite = None
+    possible_paths = [
+        os.path.join("assets", "kim-forward.png"),
+        os.path.join("assets", "player.png"),
+        os.path.join("img", "player.png"),
+        os.path.join(os.path.dirname(__file__), "img", "player.png")
+    ]
+    for p in possible_paths:
+        try:
+            if os.path.exists(p):
+                tmp = pygame.image.load(p).convert_alpha()
+                player_sprite = pygame.transform.scale(tmp, (TILE_SIZE, TILE_SIZE))
+                break
+        except Exception:
+            player_sprite = None
     while True:
         clock.tick(60)
         screen.fill((34, 139, 34))  # Grass green BG
@@ -154,14 +169,17 @@ def run_overworld(screen, inventory=None):
             (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE)
         )
         
-        # Draw player
+        # Draw player (sprite if available, otherwise fallback rectangle)
         player_screen_x = player_x - camera_x
         player_screen_y = player_y - camera_y
-        pygame.draw.rect(
-            screen,
-            (50, 100, 200),
-            (player_screen_x, player_screen_y, TILE_SIZE, TILE_SIZE)
-        )
+        if player_sprite:
+            screen.blit(player_sprite, (player_screen_x, player_screen_y))
+        else:
+            pygame.draw.rect(
+                screen,
+                (50, 100, 200),
+                (player_screen_x, player_screen_y, TILE_SIZE, TILE_SIZE)
+            )
         
         # Draw UI text
         font = pygame.font.Font(None, 24)

@@ -22,6 +22,9 @@ def start_battle(screen):
         except Exception:
             pass
         return result
+    else:
+        # Transition was quit
+        return "QUIT"
 
 def play(screen):
     """Main game loop - runs the overworld"""
@@ -40,11 +43,15 @@ def play(screen):
         if result == "QUIT":
             return
         elif result == "START_BATTLE":
-            start_battle(screen)
+            battle_result = start_battle(screen)
             pygame.display.set_caption("Adventure Time!")
+            if battle_result == "QUIT":
+                return
         elif result == "RANDOM_BATTLE":
-            start_battle(screen)
+            battle_result = start_battle(screen)
             pygame.display.set_caption("Adventure Time!")
+            if battle_result == "QUIT":
+                return
 
 def main():
     # Initialize
@@ -61,20 +68,16 @@ def main():
     my_menu = main_menu(screen, lambda: play(screen))
     
     # Menu loop
-    while True:
+    while my_menu.is_enabled():
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
         
-        if my_menu.is_enabled():
-            my_menu.update(events)
-            my_menu.draw(screen)
-            pygame.display.update()
-        else:
-            # Menu was closed, exit the game
-            break
+        my_menu.update(events)
+        my_menu.draw(screen)
+        pygame.display.update()
     
     pygame.quit()
     sys.exit()

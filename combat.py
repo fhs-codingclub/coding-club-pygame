@@ -393,7 +393,7 @@ class BattleSystem:
     def update(self):
         if self.message_timer > 0:
             self.message_timer -= 1
-            if self.message_timer == 0:
+            if self.message_timer == 0 and self.state not in ("victory", "defeat"):
                 # Check if enemy died
                 if not self.enemy.is_alive():
                     self.message = "Enemy defeated!"
