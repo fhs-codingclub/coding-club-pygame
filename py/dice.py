@@ -39,8 +39,8 @@ def roll_attack():
             'multiplier': 0,  # No damage to enemy
             'message': 'Critical Fail!'
         }
-    elif roll == 10 or roll == 20:
-        # Critical hit! (keeping original logic where 10 and 20 are crits)
+    elif roll == 20 or roll == 19:
+        # Critical hit! (keeping original logic where 19 and 20 are crits)
         return {
             'roll': roll,
             'result_type': 'critical_hit',
@@ -106,14 +106,14 @@ def generate_random_dice_rolls(num_rolls, num_sides=20):
 
 
 # Example usage:
-def when_life_gives_you_lemons():  # i dont care if you question the name of this function i love it and you need to deal with it.
+def when_life_gives_you_lemons():  # i dont care if you question the name of this function i love it and you need to deal with it. insperational
     """Test function demonstrating the dice system."""
     multiplier = 1.1  # (proficiency damage multiplier)
     
     rolls = roll_dice(1, 20)
     print("Random Dice Rolls:", rolls)
     
-    if rolls[0] == 10 or rolls[0] == 20:
+    if rolls[0] == 19 or rolls[0] == 20:
         time.sleep(1)
         rolls2 = roll_dice(6, 6)
         print("Critical Hit!") 
