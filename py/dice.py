@@ -34,8 +34,8 @@ def roll_attack():
         return {
             'roll': roll,
             'result_type': 'critical_fail',
-            'damage_dice': 2,
-            'damage_sides': 6,
+            'damage_dice': 1,
+            'damage_sides': 4,
             'multiplier': 0,  # No damage to enemy
             'message': 'Critical Fail!'
         }
@@ -44,8 +44,8 @@ def roll_attack():
         return {
             'roll': roll,
             'result_type': 'critical_hit',
-            'damage_dice': 6,
-            'damage_sides': 6,
+            'damage_dice': 3,
+            'damage_sides': 4,
             'multiplier': multiplier,
             'message': 'Critical Hit!'
         }
@@ -54,8 +54,8 @@ def roll_attack():
         return {
             'roll': roll,
             'result_type': 'good_hit',
-            'damage_dice': 4,
-            'damage_sides': 6,
+            'damage_dice': 2,
+            'damage_sides': 4,
             'multiplier': multiplier,
             'message': 'Good Roll!'
         }
@@ -64,8 +64,8 @@ def roll_attack():
         return {
             'roll': roll,
             'result_type': 'normal_hit',
-            'damage_dice': 3,
-            'damage_sides': 6,
+            'damage_dice': 1,
+            'damage_sides': 4,
             'multiplier': multiplier,
             'message': 'Normal Roll.'
         }
@@ -74,8 +74,8 @@ def roll_attack():
         return {
             'roll': roll,
             'result_type': 'good_hit',
-            'damage_dice': 4,
-            'damage_sides': 6,
+            'damage_dice': 2,
+            'damage_sides': 4,
             'multiplier': multiplier,
             'message': 'Good Roll!'
         }
