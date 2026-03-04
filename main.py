@@ -32,8 +32,10 @@ def play(screen):
     pygame.mixer.music.load("assets/copyrightedworldmusic.mp3")
     pygame.mixer.music.play(-1)
     
+    inventory = None  # Will be created on first run_overworld call
+    
     while True:
-        result = run_overworld(screen)
+        result, inventory = run_overworld(screen, inventory)
         
         if result == "QUIT":
             return

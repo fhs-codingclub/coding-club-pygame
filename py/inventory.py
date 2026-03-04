@@ -1,352 +1,271 @@
 import pygame
 import random
+import os
 
-# --- Setup ---
-pygame.init()
-
-# --- Customizable Settings ---
-WIDTH = 600         # Window width
-HEIGHT = (WIDTH*(3/4))        # Window height
-BG_COLOR = (255, 255, 255)     # Background color
-GRID_SIZE = round(WIDTH/20) # Size of the grid, by default will be 1/20th of width
-UI_SCALE = (WIDTH/400) # Scaling for UI elements
-
-PLAYER_COLOR = (50, 100, 200)  # Player color
-PLAYER_SIZE = GRID_SIZE     # Player size
-pygame.key.set_repeat(100)
-PLAYER_SPEED = 2
-
-TARGET_COLOR = (200, 50, 50)   # Target color
-TARGET_SIZE = GRID_SIZE       # Target size
-moving = False
-direction = 1
+# --- Colors ---
+GRAY = (100, 100, 100)
+WHITE = (255, 255, 255)
 
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Get the Red Square!")
-
-GRAY = (100,100,100)
-WHITE = (255,255,255)
-
-# --- Player initial position ---
-# Center the player in the window
-player_x_grid = 0
-player_y_grid = 0
-
-
-# --- Target initial position ---
-target_x_grid = 5
-target_y_grid = 5
-
-
-
-player_x = player_x_grid * GRID_SIZE
-player_y = player_y_grid * GRID_SIZE
-target_x = target_x_grid * GRID_SIZE
-target_y = target_y_grid * GRID_SIZE
-collide_rect = (0,0,0,0)
-# --- Font for win message ---
-font = pygame.font.Font(None, 60) # Use default font, size 60
-font2 = pygame.font.Font(None, 15*(round(UI_SCALE)))
-font3 = pygame.font.Font(None, 8*(round(UI_SCALE)))
-font4 = pygame.font.Font(None, 12*(round(UI_SCALE)))
-# --- Clock for controlling frame rate ---
-clock = pygame.time.Clock()
-# --- Inventory ---
-# Item properties: ["Title", "Description", "Type", Value, Image]
-# Air is effectively an empty space
-attack = 0
-defense = 0
-health = 1
-maxhealth = 10
-item1 = ["sword", "A sharp sword", "weapon", 1, (pygame.image.load("rocketship.gif"))]
-item2 = ["helmet", "A helmet", "armor", 1, (pygame.image.load("download (1).png"))]
-item3 = ["apple", "An apple", "healing", 1, (pygame.image.load("apple.png"))]
-inventory = [item1, 'air', item2, item3, 'air', 'air', 'air', 'air']
-armor = 'air'
-weapon = 'air'
-inv_space_1 = pygame.Rect((115*UI_SCALE),(95*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inv_space_2 = pygame.Rect((160*UI_SCALE),(95*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inv_space_3 = pygame.Rect((205*UI_SCALE),(95*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inv_space_4 = pygame.Rect((250*UI_SCALE),(95*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inv_space_5 = pygame.Rect((115*UI_SCALE),(160*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inv_space_6 = pygame.Rect((160*UI_SCALE),(160*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inv_space_7 = pygame.Rect((205*UI_SCALE),(160*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inv_space_8 = pygame.Rect((250*UI_SCALE),(160*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-inventory_selected = 10 # A value of 10 means no item
-inventory_hover = 10
-inventory_list = [inv_space_1,inv_space_2,inv_space_3,inv_space_4,inv_space_5,inv_space_6,inv_space_7,inv_space_8]
-armor_space = pygame.Rect((60*UI_SCALE),(95*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-weapon_space = pygame.Rect((60*UI_SCALE),(160*UI_SCALE),(35*UI_SCALE),(45*UI_SCALE))
-# --- Game State ---
-game_won = False
-state = "normal"
-
-# Define functions
-def additem(item):
-  i = 0
-  while i <= 7:
-    if inventory[i] == "air":
-      free_space = i
-      i = 20
-    else:
-      free_space = 10
-    i += 1
-  if free_space == 10:
-    return(False)
-  else:
-    inventory[free_space] = item
-    return(True)
-
-# --- Game Loop ---
-running = True
-while running:
-    # --- Control Frame Rate ---
-    # This ensures the loop runs at a maximum of 60 frames per second
-    clock.tick(60)
-    # --- Event loop ---
-    # Check for events like closing the window
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        running = False
-               
-               
-               
-    # Grid-based movement
-      if event.type == pygame.KEYDOWN:
-        if not game_won and not moving:
-          if event.key == pygame.K_LEFT and player_x_grid > 0 and state == "normal":
-            moving = True
-            direction = "left"
-          if event.key == pygame.K_RIGHT and player_x_grid < ((WIDTH/GRID_SIZE)-1) and state == "normal":
-            moving = True
-            direction = "right"
-          if event.key == pygame.K_UP and player_y_grid > 0 and state == "normal":
-            moving = True
-            direction = "up"
-          if event.key == pygame.K_DOWN and player_y_grid < ((HEIGHT/GRID_SIZE)-1) and state == "normal":
-            moving = True
-            direction = "down"
-            
-            
-          if event.key == pygame.K_e:
-            if state == "normal":
-              state = "inventory"
-            else:
-              state = "normal"
-      if event.type == pygame.MOUSEBUTTONDOWN and state == "inventory" and not inventory_hover == 10:
-        if inventory_hover == 20: # This checks if the "Use" button is being hovered over
-          if inventory[inventory_selected] == "air":
-            1 == 1 # Do nothing if air is selected
-          else:
-            temporary = inventory[inventory_selected]
-            if temporary[2] == "weapon":
-              temporary2 = weapon
-              weapon = inventory[inventory_selected]
-              inventory[inventory_selected] = temporary2
-              attack = temporary[3]
-              inventory_selected = 10
-            elif temporary[2] == "armor":
-              temporary2 = armor
-              armor = inventory[inventory_selected]
-              inventory[inventory_selected] = temporary2
-              defense = temporary[3]
-              inventory_selected = 10
-            else:
-              inventory[inventory_selected] = "air"
-              health += temporary[3]
-              if health > maxhealth:
-                health = maxhealth
-              inventory_selected = 10
-        elif inventory_hover == 21: # This checks if the armor slot is being hovered over
-          if armor == "air": # If no armor is used, do nothing
-            1 == 1
-          else:
-            success = additem(armor)
-            if success:
-              armor = "air"
-              defense = 0
-            else:
-              1 == 1
-                
-        elif inventory_hover == 22: # This checks if the weapon slot is being hovered over
-          if weapon == "air":
-            1 == 1
-          else:
-            success = additem(weapon)
-            if success:
-              weapon = "air"
-              attack = 0
-            else:
-               1 == 1
+class InventorySystem:
+    """Inventory system that can be integrated into other game screens."""
+    
+    def __init__(self, screen_width=400, screen_height=300):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.UI_SCALE = screen_width / 400
+        
+        # --- Stats ---
+        self.attack = 0
+        self.defense = 0
+        self.health = 10
+        self.maxhealth = 10
+        
+        # --- Inventory slots ---
+        self.inventory = ['air'] * 8
+        self.armor = 'air'
+        self.weapon = 'air'
+        
+        # --- Selection state ---
+        self.inventory_selected = 10  # 10 means no item selected
+        self.inventory_hover = 10
+        self.is_open = False
+        
+        # --- Setup inventory slot rectangles ---
+        self._setup_inventory_rects()
+        
+        # --- Fonts ---
+        self.font2 = pygame.font.Font(None, 15 * round(self.UI_SCALE))
+        self.font3 = pygame.font.Font(None, 8 * round(self.UI_SCALE))
+        self.font4 = pygame.font.Font(None, 12 * round(self.UI_SCALE))
+    
+    def _setup_inventory_rects(self):
+        """Setup the clickable rectangles for inventory slots."""
+        UI = self.UI_SCALE
+        self.inventory_list = [
+            pygame.Rect(115*UI, 95*UI, 35*UI, 45*UI),
+            pygame.Rect(160*UI, 95*UI, 35*UI, 45*UI),
+            pygame.Rect(205*UI, 95*UI, 35*UI, 45*UI),
+            pygame.Rect(250*UI, 95*UI, 35*UI, 45*UI),
+            pygame.Rect(115*UI, 160*UI, 35*UI, 45*UI),
+            pygame.Rect(160*UI, 160*UI, 35*UI, 45*UI),
+            pygame.Rect(205*UI, 160*UI, 35*UI, 45*UI),
+            pygame.Rect(250*UI, 160*UI, 35*UI, 45*UI),
+        ]
+        self.armor_space = pygame.Rect(60*UI, 95*UI, 35*UI, 45*UI)
+        self.weapon_space = pygame.Rect(60*UI, 160*UI, 35*UI, 45*UI)
+        self.use_button_rect = pygame.Rect(245*UI, 255*UI, 35*UI, 20*UI)
+    
+    def add_item(self, item):
+        """Add an item to the first available inventory slot.
+        Returns True if successful, False if inventory is full."""
+        for i in range(8):
+            if self.inventory[i] == "air":
+                self.inventory[i] = item
+                return True
+        return False
+    
+    def toggle(self):
+        """Toggle the inventory open/closed."""
+        self.is_open = not self.is_open
+        if not self.is_open:
+            self.inventory_selected = 10
+    
+    def handle_event(self, event):
+        """Handle pygame events for the inventory. Returns True if event was consumed."""
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+            self.toggle()
+            return True
+        
+        if not self.is_open:
+            return False
+        
+        if event.type == pygame.MOUSEBUTTONDOWN and self.inventory_hover != 10:
+            self._handle_click()
+            return True
+        
+        return False
+    
+    def _handle_click(self):
+        """Handle mouse click in inventory."""
+        if self.inventory_hover == 20:  # Use button
+            self._use_selected_item()
+        elif self.inventory_hover == 21:  # Armor slot
+            self._unequip_armor()
+        elif self.inventory_hover == 22:  # Weapon slot
+            self._unequip_weapon()
+        else:  # Regular inventory slot
+            self._handle_slot_click(self.inventory_hover)
+    
+    def _use_selected_item(self):
+        """Use the currently selected item."""
+        if self.inventory_selected == 10 or self.inventory[self.inventory_selected] == "air":
+            return
+        
+        item = self.inventory[self.inventory_selected]
+        item_type = item[2]
+        
+        if item_type == "weapon":
+            old_weapon = self.weapon
+            self.weapon = item
+            self.inventory[self.inventory_selected] = old_weapon
+            self.attack = item[3]
+        elif item_type == "armor":
+            old_armor = self.armor
+            self.armor = item
+            self.inventory[self.inventory_selected] = old_armor
+            self.defense = item[3]
+        else:  # Healing/consumable
+            self.health = min(self.health + item[3], self.maxhealth)
+            self.inventory[self.inventory_selected] = "air"
+        
+        self.inventory_selected = 10
+    
+    def _unequip_armor(self):
+        """Unequip armor and put it in inventory."""
+        if self.armor == "air":
+            return
+        if self.add_item(self.armor):
+            self.armor = "air"
+            self.defense = 0
+    
+    def _unequip_weapon(self):
+        """Unequip weapon and put it in inventory."""
+        if self.weapon == "air":
+            return
+        if self.add_item(self.weapon):
+            self.weapon = "air"
+            self.attack = 0
+    
+    def _handle_slot_click(self, slot_index):
+        """Handle clicking on an inventory slot."""
+        if self.inventory_selected == slot_index:
+            self.inventory_selected = 10
+        elif self.inventory_selected == 10:
+            self.inventory_selected = slot_index
         else:
-          if inventory_selected == inventory_hover:
-            inventory_selected = 10
-          else:
-            if inventory_selected == 10:
-              inventory_selected = inventory_hover
+            # Swap items
+            self.inventory[self.inventory_selected], self.inventory[slot_index] = \
+                self.inventory[slot_index], self.inventory[self.inventory_selected]
+            self.inventory_selected = 10
+    
+    def update(self):
+        """Update inventory state (check mouse hover)."""
+        if not self.is_open:
+            return
+        
+        mouse_pos = pygame.mouse.get_pos()
+        self.inventory_hover = 10
+        
+        # Check inventory slots
+        for i, rect in enumerate(self.inventory_list):
+            if rect.collidepoint(mouse_pos):
+                self.inventory_hover = i
+                return
+        
+        # Check use button
+        if self.use_button_rect.collidepoint(mouse_pos):
+            self.inventory_hover = 20
+        elif self.armor_space.collidepoint(mouse_pos):
+            self.inventory_hover = 21
+        elif self.weapon_space.collidepoint(mouse_pos):
+            self.inventory_hover = 22
+    
+    def draw(self, screen):
+        """Draw the inventory UI on the given screen."""
+        if not self.is_open:
+            return
+        
+        UI = self.UI_SCALE
+        
+        # Draw stats panel
+        pygame.draw.rect(screen, GRAY, (310*UI, 50*UI, 90*UI, 200*UI))
+        stats_text1 = self.font4.render(f"Attack: {self.attack}", True, (0, 0, 0))
+        stats_text2 = self.font4.render(f"Defense: {self.defense}", True, (0, 0, 0))
+        stats_text3 = self.font4.render(f"Health: {self.health}/{self.maxhealth}", True, (0, 0, 0))
+        screen.blit(stats_text1, (320*UI, 60*UI))
+        screen.blit(stats_text2, (320*UI, 85*UI))
+        screen.blit(stats_text3, (320*UI, 110*UI))
+        
+        # Draw main inventory panel
+        pygame.draw.rect(screen, GRAY, (50*UI, 75*UI, 250*UI, 150*UI))
+        pygame.draw.rect(screen, GRAY, (100*UI, 250*UI, 200*UI, 50*UI))
+        
+        # Draw inventory slots
+        for i, rect in enumerate(self.inventory_list):
+            color = (200, 200, 200) if i == self.inventory_selected else WHITE
+            pygame.draw.rect(screen, color, rect)
+            if self.inventory[i] != "air":
+                img = pygame.transform.scale(self.inventory[i][4], (int(35*UI), int(45*UI)))
+                screen.blit(img, rect.topleft)
+        
+        # Draw armor slot
+        pygame.draw.rect(screen, WHITE, self.armor_space)
+        if self.armor != "air":
+            img = pygame.transform.scale(self.armor[4], (int(35*UI), int(45*UI)))
+            screen.blit(img, self.armor_space.topleft)
+        
+        # Draw weapon slot
+        pygame.draw.rect(screen, WHITE, self.weapon_space)
+        if self.weapon != "air":
+            img = pygame.transform.scale(self.weapon[4], (int(35*UI), int(45*UI)))
+            screen.blit(img, self.weapon_space.topleft)
+        
+        # Draw item description if something is selected
+        if self.inventory_selected != 10:
+            item = self.inventory[self.inventory_selected]
+            if item == "air":
+                desc_text = self.font3.render("Literally nothing", True, (0, 0, 0))
+                screen.blit(desc_text, (110*UI, 260*UI))
             else:
-              temporary = inventory[inventory_selected]
-              inventory[inventory_selected] = inventory[inventory_hover]
-              inventory[inventory_hover] = temporary
-              inventory_selected = 10
-            
-              
-              
-      
-    # --- Player Movement (only if the game is not won yet) ---
+                title_text = self.font2.render(item[0], True, (0, 0, 0))
+                desc_text = self.font3.render(item[1], True, (0, 0, 0))
+                screen.blit(title_text, (110*UI, 260*UI))
+                screen.blit(desc_text, (110*UI, 275*UI))
+                pygame.draw.rect(screen, (200, 200, 200), self.use_button_rect)
+                use_text = self.font2.render("Use", True, (0, 0, 0))
+                screen.blit(use_text, (250*UI, 260*UI))
 
 
-    # --- Border Check ---
-    if player_x_grid < 0.5:
-      player_x_grid = 0
-    if player_x_grid >= (WIDTH/GRID_SIZE):
-      player_x_grid = ((WIDTH/GRID_SIZE)-1)
-    if player_y_grid < 0.5:
-      player_y_grid = 0
-    if player_y_grid >= (HEIGHT/GRID_SIZE):
-      player_y_grid = ((HEIGHT/GRID_SIZE)-1)
-    mouse_pos = pygame.mouse.get_pos()
-    i = 0
-    while i <= 7:
-      colliding = inventory_list[i].collidepoint(mouse_pos)
-      if colliding == True:
-        collide_rect = inventory_list[i]
-        inventory_hover = i
-        i = 20
-      else:
-        collide_rect = (0,0,0,0)
-        inventory_hover = 10
-      i += 1
-    if pygame.Rect((245*UI_SCALE),(255*UI_SCALE),(35*UI_SCALE),(20*UI_SCALE)).collidepoint(mouse_pos):
-      inventory_hover = 20
-    if armor_space.collidepoint(mouse_pos):
-      inventory_hover = 21
-    if weapon_space.collidepoint(mouse_pos):
-      inventory_hover = 22
-     
-          
-    keys = pygame.key.get_pressed()
-
-          
-    if not moving:
-      player_x = player_x_grid * GRID_SIZE
-      player_y = player_y_grid * GRID_SIZE
-      target_x = target_x_grid * GRID_SIZE
-      target_y = target_y_grid * GRID_SIZE
-      if keys[pygame.K_LSHIFT]:
-        PLAYER_SPEED = (GRID_SIZE/5)
-      else:
-        PLAYER_SPEED = (GRID_SIZE/10)
-    if moving:
-      if direction == "up": 
-        player_y -= PLAYER_SPEED
-        if player_y % GRID_SIZE == 0:
-          moving = False
-          player_y_grid -= 1
-      if direction == "down": 
-        player_y += PLAYER_SPEED
-        if player_y % GRID_SIZE == 0:
-          moving = False
-          player_y_grid += 1
-      if direction == "left": 
-        player_x -= PLAYER_SPEED
-        if player_x % GRID_SIZE == 0:
-          moving = False
-          player_x_grid -= 1
-      if direction == "right": 
-        player_x += PLAYER_SPEED
-        if player_x % GRID_SIZE == 0:
-          moving = False
-          player_x_grid += 1
-
-    # --- Create Rects for Collision ---
-    # We create these fresh each loop to have the latest coordinates
-    player_rect = pygame.Rect((player_x), (player_y), PLAYER_SIZE, PLAYER_SIZE)
-    target_rect = pygame.Rect((target_x), (target_y), TARGET_SIZE, TARGET_SIZE)
-
-    # --- Collision Check ---
-    if player_rect.colliderect(target_rect):
-      additem(item3)
-      target_x_grid = random.randint(0,19)
-      target_y_grid = random.randint(0,14)
-      target_x = target_x_grid * GRID_SIZE
-      target_y = target_y_grid * GRID_SIZE
-
-    # --- Drawing ---
-    screen.fill(BG_COLOR)
-     
-    # Draw the target
-    pygame.draw.rect(screen, TARGET_COLOR, target_rect)
-     
-    # Draw the player
-    pygame.draw.rect(screen, PLAYER_COLOR, player_rect)
-     
-
-    # Draw the inventory
-    if state == "inventory":
-      # Draw stats screen
-      pygame.draw.rect(screen, GRAY, ((310*UI_SCALE),(50*UI_SCALE),(90*UI_SCALE),(200*UI_SCALE)))
-      # Draw attack
-      stats_text1 = font4.render(("Attack: " + str(attack)), True, (0,0,0))
-      screen.blit(stats_text1,((320*UI_SCALE),(60*UI_SCALE)))
-      # Draw defense
-      stats_text2 = font4.render(("Defense: " + str(defense)), True, (0,0,0))
-      screen.blit(stats_text2,((320*UI_SCALE),(85*UI_SCALE)))
-      # Draw health
-      stats_text3 = font4.render(("Health: " + str(health) + "/" + str(maxhealth)), True, (0,0,0))
-      screen.blit(stats_text3,((320*UI_SCALE),(110*UI_SCALE)))
-      
-      pygame.draw.rect(screen, GRAY, ((50*UI_SCALE),(75*UI_SCALE),(250*UI_SCALE),(150*UI_SCALE)))
-      pygame.draw.rect(screen, GRAY, ((100*UI_SCALE),(250*UI_SCALE),(200*UI_SCALE),(50*UI_SCALE)))
-      i = 0
-      while i <= 7:
-        if inventory[i] == "air":
-          pygame.draw.rect(screen, WHITE, inventory_list[i])
-          if i == inventory_selected:
-            pygame.draw.rect(screen, (200,200,200), inventory_list[inventory_selected])  
-        else:
-          pygame.draw.rect(screen, WHITE, inventory_list[i])
-          if i == inventory_selected:
-            pygame.draw.rect(screen, (200,200,200), inventory_list[inventory_selected])
-          rect_topleft = inventory_list[i].topleft
-          screen.blit(pygame.transform.scale(inventory[i][4],((35*UI_SCALE),(45*UI_SCALE))), rect_topleft)
-        i += 1
-      if armor == "air":
-        pygame.draw.rect(screen, WHITE, armor_space)
-      else:
-        pygame.draw.rect(screen, WHITE, armor_space)
-        rect_topleft = armor_space.topleft
-        screen.blit(pygame.transform.scale(armor[4],((35*UI_SCALE),(45*UI_SCALE))), rect_topleft)
-      if weapon == "air":
-        pygame.draw.rect(screen, WHITE, weapon_space)
-      else:
-        pygame.draw.rect(screen, WHITE, weapon_space)
-        rect_topleft = weapon_space.topleft
-        screen.blit(pygame.transform.scale(weapon[4],((35*UI_SCALE),(45*UI_SCALE))), rect_topleft)
-      if not inventory_selected == 10:
-        if inventory[inventory_selected] == "air":
-          description_text = font3.render("Literally nothing", True, (0,0,0))
-          screen.blit(description_text, ((110*UI_SCALE),(260*UI_SCALE)))
-        else:
-          current_item = inventory[inventory_selected]
-          title_text = font2.render(current_item[0], True, (0,0,0))
-          description_text = font3.render(current_item[1], True, (0,0,0))
-          screen.blit(description_text, ((110*UI_SCALE),(275*UI_SCALE)))
-          screen.blit(title_text, ((110*UI_SCALE),(260*UI_SCALE)))
-          pygame.draw.rect(screen, (200,200,200), ((245*UI_SCALE),(255*UI_SCALE),(35*UI_SCALE),(20*UI_SCALE)))
-          use_text = font2.render("Use", True, (0,0,0))
-          screen.blit(use_text, ((250*UI_SCALE),(260*UI_SCALE)))
-          
-    # --- Show Win Message if Game is Won ---
-    if game_won:
-      win_text = font.render("You Win!", True, (0, 150, 0))
-      # Center the text
-      text_rect = win_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-      screen.blit(win_text, text_rect)
-
-    # --- Update Display ---
-    pygame.display.update()
-
-# --- Quit Pygame ---
-pygame.quit()
+# --- Legacy standalone mode (for testing) ---
+if __name__ == "__main__":
+    pygame.init()
+    
+    WIDTH = 600
+    HEIGHT = int(WIDTH * (3/4))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Inventory Test")
+    
+    clock = pygame.time.Clock()
+    inventory_system = InventorySystem(WIDTH, HEIGHT)
+    
+    # Add some test items
+    item1 = ["sword", "A sharp sword", "weapon", 1, pygame.image.load("rocketship.gif")]
+    item2 = ["helmet", "A helmet", "armor", 1, pygame.image.load("download (1).png")]
+    item3 = ["apple", "An apple", "healing", 1, pygame.image.load("apple.png")]
+    inventory_system.add_item(item1)
+    inventory_system.add_item(item2)
+    inventory_system.add_item(item3)
+    
+    running = True
+    while running:
+        clock.tick(60)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            inventory_system.handle_event(event)
+        
+        inventory_system.update()
+        
+        screen.fill((255, 255, 255))
+        inventory_system.draw(screen)
+        
+        if not inventory_system.is_open:
+            font = pygame.font.Font(None, 30)
+            text = font.render("Press E to open inventory", True, (0, 0, 0))
+            screen.blit(text, (WIDTH//2 - 100, HEIGHT//2))
+        
+        pygame.display.update()
+    
+    pygame.quit()
