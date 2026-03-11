@@ -7,12 +7,12 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
 from inventory import InventorySystem
 
-WIDTH = 400
-HEIGHT = 300
+WIDTH = 800
+HEIGHT = 400
 TILE_SIZE = 20
 # Define a larger world so the camera has room to scroll
-WORLD_COLS = 60
-WORLD_ROWS = 45
+WORLD_COLS = 100
+WORLD_ROWS = 50
 WORLD_WIDTH = WORLD_COLS * TILE_SIZE
 WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 
