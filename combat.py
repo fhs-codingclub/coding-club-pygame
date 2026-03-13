@@ -61,9 +61,10 @@ class Combatant:
 
 class Player(Combatant):
     def __init__(self):
-        super().__init__("Hero", inventory.InventorySystem.maxhealth, inventory.InventorySystem.attack, inventory.InventorySystem.defense)
+        invent = inventory.InventorySystem()
+        super().__init__("Hero", invent.maxhealth, invent.attack, invent.defense)
         self.items = {"Hamburger": 3, "Lifeup": 1}
-        self.hp = inventory.InventorySystem.health
+        self.hp = invent.health
 
     def use_item(self, item_name):
         if item_name in self.items and self.items[item_name] > 0:
