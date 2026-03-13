@@ -27,10 +27,9 @@ echo ""
 echo "GUI environment is ready!"
 echo "Go to your Codespaces Ports tab, set port 6080 to Public, and open the link."
 echo ""
-echo "Before running your game, set these in your terminal:"
-echo "  export DISPLAY=:1"
-echo "  export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
-echo "  export SDL_AUDIODRIVER=dummy"
+export DISPLAY=:1
+export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
+export SDL_AUDIODRIVER=dummy
 echo ""
 echo "Then run: python main.py"
 echo ""
