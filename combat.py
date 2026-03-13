@@ -4,7 +4,7 @@ import pygame
 import random
 import os
 import sys
-import py/inventory.py as inventory
+from py import inventory
 
 # Add py folder to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
