@@ -4,6 +4,7 @@ import pygame
 import random
 import os
 import sys
+import py/inventory.py as inventory
 
 # Add py folder to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
@@ -60,8 +61,9 @@ class Combatant:
 
 class Player(Combatant):
     def __init__(self):
-        super().__init__("Hero", 100, 15, 5)
+        super().__init__("Hero", inventory.InventorySystem.maxhealth, inventory.InventorySystem.attack, inventory.InventorySystem.defense)
         self.items = {"Hamburger": 3, "Lifeup": 1}
+        self.hp = inventory.InventorySystem.health
 
     def use_item(self, item_name):
         if item_name in self.items and self.items[item_name] > 0:

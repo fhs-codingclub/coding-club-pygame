@@ -16,10 +16,10 @@ class InventorySystem:
         self.UI_SCALE = screen_width / 400
         
         # --- Stats ---
-        self.attack = 0
-        self.defense = 0
-        self.health = 10
-        self.maxhealth = 10
+        self.attack = 15
+        self.defense = 5
+        self.health = 100
+        self.maxhealth = 100
         
         # --- Inventory slots ---
         self.inventory = ['air'] * 8
