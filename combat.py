@@ -29,7 +29,7 @@ DARK_BLUE = (20, 20, 80)
 font = None
 small_font = None
 
-ENEMY_IMAGE_PATH = "./img/ryan.jpg"
+ENEMY_IMAGE_PATH = "./assets/img/ryan.jpg"
 
 
 def init_fonts():

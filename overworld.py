@@ -65,9 +65,9 @@ def run_overworld(screen, inventory=None):
     # --- Load player sprite once (falls back to a rectangle if not found) ---
     player_sprite = None
     possible_paths = [
-        os.path.join("assets", "/img/kim-forward.png"),
-        os.path.join("assets", "/img/player.png"),
-        os.path.join("img", "img/player.png"),
+        os.path.join("assets", "img","kim-forward.png"),
+        os.path.join("assets", "img","player.png"),
+        os.path.join("assets/img", "player.png"),
         os.path.join(os.path.dirname(__file__), "img", "player.png")
     ]
     for p in possible_paths:

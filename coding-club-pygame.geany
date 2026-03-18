@@ -27,13 +27,13 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=1
+current_page=3
 FILE_NAME_0=0;None;0;EUTF-8;1;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Frequirements.txt;0;4
-FILE_NAME_1=2067;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Fmain.py;0;4
+FILE_NAME_1=1833;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Fmain.py;0;4
 FILE_NAME_2=3179;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Floader.py;0;4
-FILE_NAME_3=0;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Fcombat.py;0;4
+FILE_NAME_3=3766;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Fcombat.py;0;4
 FILE_NAME_4=86;Python;0;EUTF-8;1;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Fmenu.py;0;4
-FILE_NAME_5=6313;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Foverworld.py;0;4
+FILE_NAME_5=2393;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Foverworld.py;0;4
 FILE_NAME_6=3523;Python;0;EUTF-8;0;1;0;%2Fhome%2Fraspi2%2Fcoding-club-pygame%2Fpy%2Fdice.py;0;4
 
 [VTE]
