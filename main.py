@@ -61,7 +61,7 @@ def main():
     pygame.mixer.init()
     
     # Load music
-    pygame.mixer.music.load("assets/Main-Menu-Theme.mp3")
+    pygame.mixer.music.load("assets/moosic/Main-Menu-Theme.mp3")
     pygame.mixer.music.play(-1)
     
     # Run the main menu first
