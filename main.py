@@ -9,7 +9,7 @@ from overworld import run_overworld
 def start_battle(screen):
     """Handles the transition and battle sequence"""
     pygame.mixer.music.fadeout(1000)  
-    pygame.mixer.music.load("assets/copyrightedplaceholdermusic.mp3")
+    pygame.mixer.music.load("assets/moosic/copyrightedplaceholdermusic.mp3")
     pygame.mixer.music.play(-1)
     # If transition completed (didn't quit), start the battle
     if run_transition(screen):
@@ -17,7 +17,7 @@ def start_battle(screen):
         # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)
         try:
-            pygame.mixer.music.load("assets/Exploration_song_no_drums.mp3")
+            pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
             pygame.mixer.music.play(-1)
         except Exception:
             pass
@@ -32,7 +32,7 @@ def play(screen):
     pygame.mixer.music.fadeout(1000) 
 
     # Optional: Change music for overworld
-    pygame.mixer.music.load("assets/Exploration_song_no_drums.mp3")
+    pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
     pygame.mixer.music.play(-1)
     
     inventory = None  # Will be created on first run_overworld call
@@ -61,7 +61,7 @@ def main():
     pygame.mixer.init()
     
     # Load music
-    pygame.mixer.music.load("assets/Main-Menu-Theme.mp3")
+    pygame.mixer.music.load("assets/moosic/Main-Menu-Theme.mp3")
     pygame.mixer.music.play(-1)
     
     # Run the main menu first

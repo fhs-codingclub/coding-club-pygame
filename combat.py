@@ -4,7 +4,7 @@ import pygame
 import random
 import os
 import sys
-import py/inventory.py as inventory
+from py import inventory
 
 # Add py folder to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
@@ -29,7 +29,7 @@ DARK_BLUE = (20, 20, 80)
 font = None
 small_font = None
 
-ENEMY_IMAGE_PATH = "./img/ryan.jpg"
+ENEMY_IMAGE_PATH = "./assets/img/ryan.jpg"
 
 
 def init_fonts():
@@ -61,9 +61,10 @@ class Combatant:
 
 class Player(Combatant):
     def __init__(self):
-        super().__init__("Hero", inventory.InventorySystem.maxhealth, inventory.InventorySystem.attack, inventory.InventorySystem.defense)
+        invent = inventory.InventorySystem()
+        super().__init__("Hero", invent.maxhealth, invent.attack, invent.defense)
         self.items = {"Hamburger": 3, "Lifeup": 1}
-        self.hp = inventory.InventorySystem.health
+        self.hp = invent.health
 
     def use_item(self, item_name):
         if item_name in self.items and self.items[item_name] > 0:
