@@ -6,6 +6,7 @@ import os
 # Add py folder to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
 from inventory import InventorySystem
+from npc import NPC
 
 WIDTH = 640
 HEIGHT = 480
@@ -51,11 +52,21 @@ def run_overworld(screen, inventory=None, player_state=None):
     target_x_grid = player_state.get('target_x_grid', player_x_grid + 5) if player_state else player_x_grid + 5
     target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
 
+    # LOL its hardcoded rn but idc use for loops or wtv to make walls and stuff later, I kinda just wanted to test the battle trigger so I threw this together real quick
     collision_tiles = {(50, 54), (51, 54), (52, 54), (53, 54), (54, 54), (55, 54), (56, 54), (57, 54), (58, 54), (58, 53), (58, 52), (58, 51), (58, 50), (58, 49), (58, 48), (58, 47), (58, 46), (57, 46), (56, 46), (55, 46), (54, 46), (53, 46), (52, 46), (51, 46), (50, 46), (49, 46), (49, 47), 
                        (49, 48), (49, 49), (49, 50), (49, 51), (49, 52), (49, 53), (49, 54)}
 
+    npc_list = [
+        NPC("John", 53, 48, ["SUP dude", "There are many enemies here!", "Watch out for the red tiles!"], TILE_SIZE)
+    ]  # NPC implementation
+
+    active_npc = None  # Track which NPC we're currently talking to
+
+    #Add npc's to collision tiles so player can't walk through them
+    for npc in npc_list:
+        collision_tiles.add((npc.grid_x, npc.grid_y))
+
     def build_state():
-        
         return {
             'player_x_grid': player_x_grid,
             'player_y_grid': player_y_grid,
@@ -105,7 +116,7 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     while True:
         clock.tick(60)
-        screen.fill((45, 45, 50))  # Background for academia cave dark grey
+        screen.fill((26, 28, 44))  # Background for academia cave dark grey
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -154,9 +165,18 @@ def run_overworld(screen, inventory=None, player_state=None):
                     else: 
                         print(f"Bumped into a wall at {nextx}, {nexty} facing {potential_direction}")
                         pass
-                # TEST: Press SPACE to force a battle
+                
                 elif event.key == pygame.K_SPACE:
-                    return ("RANDOM_BATTLE", inventory, build_state())
+                    if active_npc:
+                        if not active_npc.advance_dialogue():
+                            active_npc = None
+                    else: 
+                        for npc in npc_list:
+                            if abs(player_x_grid - npc.grid_x) <= 1 and abs(player_y_grid - npc.grid_y) <= 1:
+                                npc.is_talking = True
+                                active_npc = npc
+                                break
+        
 
         # Update inventory (for mouse hover detection)
         inventory.update()
@@ -195,7 +215,6 @@ def run_overworld(screen, inventory=None, player_state=None):
 
         # Update camera each frame
         camera_x, camera_y = clamp_camera(player_x, player_y)
-        
 
         # Draw Everything
         # Draw grass pattern (only tiles visible in the current camera view)
@@ -210,7 +229,7 @@ def run_overworld(screen, inventory=None, player_state=None):
                     screen_y = gy * TILE_SIZE - camera_y
                     pygame.draw.rect(
                         screen,
-                        (43, 43, 50),
+                        (37, 41, 62), # TILE 2
                         (screen_x, screen_y, TILE_SIZE, TILE_SIZE)
                     )
 
@@ -232,6 +251,32 @@ def run_overworld(screen, inventory=None, player_state=None):
                 (100, 100, 100),
                 (col_screen_x, col_screen_y, TILE_SIZE, TILE_SIZE)
             )
+        
+        # Draw NPCs (blue)
+        for npc in npc_list:
+            npc_screen_x = npc.grid_x * TILE_SIZE - camera_x
+            npc_screen_y = npc.grid_y * TILE_SIZE - camera_y
+            screen.blit(npc.image, (npc_screen_x, npc_screen_y))
+
+        if active_npc and active_npc.is_talking:
+            # Draw dialogue box background
+            box_rect = pygame.Rect(20, HEIGHT - 120, WIDTH - 40, 100)
+            pygame.draw.rect(screen, (20, 20, 40), box_rect, border_radius=8)
+            pygame.draw.rect(screen, (255, 255, 255), box_rect, width=2, border_radius=8)
+            
+            # Draw NPC name
+            font = pygame.font.Font(None, 28)
+            name_surf = font.render(active_npc.name, True, (255, 220, 100))
+            screen.blit(name_surf, (box_rect.x + 12, box_rect.y + 10))
+            
+            # Draw current dialogue line
+            line_surf = font.render(active_npc.get_current_line(), True, (255, 255, 255))
+            screen.blit(line_surf, (box_rect.x + 12, box_rect.y + 40))
+            
+            # Draw "press space" prompt
+            small_font = pygame.font.Font(None, 20)
+            prompt = small_font.render("SPACE to continue...", True, (150, 150, 150))
+            screen.blit(prompt, (box_rect.x + 12, box_rect.y + 72))
 
         # Draw player (sprite if available, otherwise fallback rectangle)
         player_screen_x = player_x - camera_x
