@@ -1,11 +1,14 @@
 import pygame
 import random
 import os
+import json
 
 # --- Colors ---
 GRAY = (100, 100, 100)
 WHITE = (255, 255, 255)
 
+with open('jason/test.json', 'r') as file:
+    data = json.load(file)
 
 class InventorySystem:
     """Inventory system that can be integrated into other game screens."""
