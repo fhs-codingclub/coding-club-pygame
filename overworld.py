@@ -7,6 +7,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
 from inventory import InventorySystem
 from npc import NPC
+from tilemap import build_cave_map
 
 WIDTH = 640
 HEIGHT = 480
@@ -53,8 +54,7 @@ def run_overworld(screen, inventory=None, player_state=None):
     target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
 
     # LOL its hardcoded rn but idc use for loops or wtv to make walls and stuff later, I kinda just wanted to test the battle trigger so I threw this together real quick
-    collision_tiles = {(50, 54), (51, 54), (52, 54), (53, 54), (54, 54), (55, 54), (56, 54), (57, 54), (58, 54), (58, 53), (58, 52), (58, 51), (58, 50), (58, 49), (58, 48), (58, 47), (58, 46), (57, 46), (56, 46), (55, 46), (54, 46), (53, 46), (52, 46), (51, 46), (50, 46), (49, 46), (49, 47), 
-                       (49, 48), (49, 49), (49, 50), (49, 51), (49, 52), (49, 53), (49, 54)}
+    tile_grid, collision_tiles = build_cave_map(WORLD_COLS, WORLD_ROWS)
 
     npc_list = [
         NPC("John", 53, 48, ["SUP dude", "There are many enemies here!", "Watch out for the red tiles!"], TILE_SIZE)
@@ -96,6 +96,19 @@ def run_overworld(screen, inventory=None, player_state=None):
     camera_x, camera_y = clamp_camera(player_x, player_y)
 
     clock = pygame.time.Clock()
+
+    #Load Tile assets
+    def load_tile(path, size):
+        try:
+            img = pygame.image.load(path).convert_alpha()
+            return pygame.transform.scale(img, (size, size))
+        except Exception:
+            return None
+    
+    tile_floor  = load_tile(os.path.join("assets", "img", "limestone_floor.png"), TILE_SIZE)
+    tile_wall   = load_tile(os.path.join("assets", "img", "Stone_wall.png"), TILE_SIZE)
+    tile_edge   = load_tile(os.path.join("assets", "img", "Stone_frame.png"), TILE_SIZE)
+    tile_lime_edge = load_tile(os.path.join("assets", "img", "Limestone_frame.png"), TILE_SIZE)
 
     # --- Load player sprite once (falls back to a rectangle if not found) ---
     player_sprite = None
@@ -222,17 +235,24 @@ def run_overworld(screen, inventory=None, player_state=None):
         end_col = min(WORLD_COLS, (camera_x + WIDTH) // TILE_SIZE + 2)
         start_row = max(0, camera_y // TILE_SIZE)
         end_row = min(WORLD_ROWS, (camera_y + HEIGHT) // TILE_SIZE + 2)
+        
+        tile_images = {
+            0: tile_floor,
+            1: tile_wall,
+            2: tile_edge,
+            3: None,  # VOID = just background color
+        }
+
         for gx in range(start_col, end_col):
             for gy in range(start_row, end_row):
-                if (gx + gy) % 2 == 0:
-                    screen_x = gx * TILE_SIZE - camera_x
-                    screen_y = gy * TILE_SIZE - camera_y
-                    pygame.draw.rect(
-                        screen,
-                        (37, 41, 62), # TILE 2
-                        (screen_x, screen_y, TILE_SIZE, TILE_SIZE)
-                    )
+                tile_id = tile_grid[gx][gy]
+                img = tile_images.get(tile_id)
+                sx = gx * TILE_SIZE - camera_x
+                sy = gy * TILE_SIZE - camera_y
+                if img:
+                    screen.blit(img, (sx, sy))
 
+        # VOID tiles just show the dark background, no blit needed
         # Draw battle trigger tile (red = special battle spot)
         target_screen_x = target_x_grid * TILE_SIZE - camera_x
         target_screen_y = target_y_grid * TILE_SIZE - camera_y
