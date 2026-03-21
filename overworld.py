@@ -16,6 +16,9 @@ WORLD_ROWS = 100
 WORLD_WIDTH = WORLD_COLS * TILE_SIZE
 WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 
+# Random encounter settings
+ENCOUNTER_CHANCE = 0  
+
 def run_overworld(screen, inventory=None, player_state=None):
     """Run the overworld screen.
     Args:
@@ -85,9 +88,6 @@ def run_overworld(screen, inventory=None, player_state=None):
     target_y_grid = min(WORLD_ROWS - 1, max(0, target_y_grid))
     camera_x, camera_y = clamp_camera(player_x, player_y)
 
-    # Random encounter settings
-    ENCOUNTER_CHANCE = 0.10  # 10% chance per step
-
     clock = pygame.time.Clock()
 
     # --- Load player sprite once (falls back to a rectangle if not found) ---
@@ -128,6 +128,14 @@ def run_overworld(screen, inventory=None, player_state=None):
                 elif event.key == pygame.K_UP and player_y_grid > 0:
                     moving, direction = True, "up"
                 elif event.key == pygame.K_DOWN and player_y_grid < WORLD_ROWS - 1:
+                    moving, direction = True, "down"
+                elif event.key == pygame.K_a and player_x_grid > 0:
+                    moving, direction = True, "left"
+                elif event.key == pygame.K_d and player_x_grid < WORLD_COLS - 1:
+                    moving, direction = True, "right"
+                elif event.key == pygame.K_w and player_y_grid > 0:
+                    moving, direction = True, "up"
+                elif event.key == pygame.K_s and player_y_grid < WORLD_ROWS - 1:
                     moving, direction = True, "down"
 
                 # TEST: Press SPACE to force a battle
