@@ -11,9 +11,10 @@ def start_battle(screen):
     pygame.mixer.music.fadeout(1000)  
     pygame.mixer.music.load("assets/moosic/copyrightedplaceholdermusic.mp3")
     pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.68)  
+    pygame.mixer.music.set_volume(0.2)  
     vol = pygame.mixer.music.get_volume()
     print("moosic volume for battle is", vol)
+    
     # If transition completed (didn't quit), start the battle
     if run_transition(screen):
         result = run_battle(screen)

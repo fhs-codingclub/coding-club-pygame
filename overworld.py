@@ -10,6 +10,7 @@ from inventory import InventorySystem
 WIDTH = 640
 HEIGHT = 480
 TILE_SIZE = 48
+
 # Define a larger world so the camera has room to scroll
 WORLD_COLS = 100
 WORLD_ROWS = 100
@@ -57,6 +58,9 @@ def run_overworld(screen, inventory=None, player_state=None):
     # Only set it once based on the ORIGINAL spawn, not the restored position.
     target_x_grid = player_state.get('target_x_grid', player_x_grid + 5) if player_state else player_x_grid + 5
     target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
+
+    collision_tiles = {(50, 54), (51, 54), (52, 54), (53, 54), (54, 54), (55, 54), (56, 54), (57, 54), (58, 54), (58, 53), (58, 52), (58, 51), (58, 50), (58, 49), (58, 48), (58, 47), (58, 46), (57, 46), (56, 46), (55, 46), (54, 46), (53, 46), (52, 46), (51, 46), (50, 46), (49, 46), (49, 47), 
+                       (49, 48), (49, 49), (49, 50), (49, 51), (49, 52), (49, 53), (49, 54)}
 
     def build_state():
         """Helper: pack all local vars into a state dict to return."""
@@ -109,7 +113,7 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     while True:
         clock.tick(60)
-        screen.fill((34, 139, 34))  # Grass green BG
+        screen.fill((45, 45, 50))  # Background for academia cave dark grey
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -121,23 +125,43 @@ def run_overworld(screen, inventory=None, player_state=None):
 
             # Grid Movement Input (only when inventory is closed)
             if event.type == pygame.KEYDOWN and not moving and not inventory.is_open:
-                if event.key == pygame.K_LEFT and player_x_grid > 0:
-                    moving, direction = True, "left"
-                elif event.key == pygame.K_RIGHT and player_x_grid < WORLD_COLS - 1:
-                    moving, direction = True, "right"
-                elif event.key == pygame.K_UP and player_y_grid > 0:
-                    moving, direction = True, "up"
-                elif event.key == pygame.K_DOWN and player_y_grid < WORLD_ROWS - 1:
-                    moving, direction = True, "down"
-                elif event.key == pygame.K_a and player_x_grid > 0:
-                    moving, direction = True, "left"
-                elif event.key == pygame.K_d and player_x_grid < WORLD_COLS - 1:
-                    moving, direction = True, "right"
-                elif event.key == pygame.K_w and player_y_grid > 0:
-                    moving, direction = True, "up"
-                elif event.key == pygame.K_s and player_y_grid < WORLD_ROWS - 1:
-                    moving, direction = True, "down"
 
+                nextx, nexty = player_x_grid, player_y_grid
+                potential_direction = None
+
+                if event.key == pygame.K_LEFT and player_x_grid > 0:
+                    potential_direction = "left"
+                    nextx -= 1
+                elif event.key == pygame.K_RIGHT and player_x_grid < WORLD_COLS - 1:
+                    potential_direction = "right"
+                    nextx += 1
+                elif event.key == pygame.K_UP and player_y_grid > 0:
+                    potential_direction = "up"
+                    nexty -= 1
+                elif event.key == pygame.K_DOWN and player_y_grid < WORLD_ROWS - 1:
+                    potential_direction = "down"
+                    nexty += 1
+                elif event.key == pygame.K_a and player_x_grid > 0:
+                    potential_direction = "left"
+                    nextx -= 1
+                elif event.key == pygame.K_d and player_x_grid < WORLD_COLS - 1:
+                    potential_direction = "right"
+                    nextx += 1
+                elif event.key == pygame.K_w and player_y_grid > 0:
+                    potential_direction = "up"
+                    nexty -= 1
+                elif event.key == pygame.K_s and player_y_grid < WORLD_ROWS - 1:
+                    potential_direction = "down"
+                    nexty += 1
+
+                if potential_direction:
+                    if (nextx, nexty) not in collision_tiles:
+                        direction = potential_direction
+                        moving = True
+                        direction = potential_direction
+                    else: 
+                        print(f"Bumped into a wall at {nextx}, {nexty} facing {potential_direction}")
+                        pass
                 # TEST: Press SPACE to force a battle
                 elif event.key == pygame.K_SPACE:
                     return ("RANDOM_BATTLE", inventory, build_state())
@@ -172,13 +196,14 @@ def run_overworld(screen, inventory=None, player_state=None):
             if not moving:
                 if random.random() < ENCOUNTER_CHANCE:
                     return ("RANDOM_BATTLE", inventory, build_state())
+                
+            # Check for battle trigger tile (red tile)
+                if player_x_grid == target_x_grid and player_y_grid == target_y_grid:
+                    return ("START_BATTLE", inventory, build_state())
 
         # Update camera each frame
         camera_x, camera_y = clamp_camera(player_x, player_y)
-
-        # Check for Battle Trigger (special tile)
-        if player_x_grid == target_x_grid and player_y_grid == target_y_grid and not moving:
-            return ("START_BATTLE", inventory, build_state())
+        
 
         # Draw Everything
         # Draw grass pattern (only tiles visible in the current camera view)
@@ -193,7 +218,7 @@ def run_overworld(screen, inventory=None, player_state=None):
                     screen_y = gy * TILE_SIZE - camera_y
                     pygame.draw.rect(
                         screen,
-                        (44, 149, 44),
+                        (43, 43, 50),
                         (screen_x, screen_y, TILE_SIZE, TILE_SIZE)
                     )
 
@@ -205,6 +230,16 @@ def run_overworld(screen, inventory=None, player_state=None):
             (200, 50, 50),
             (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE)
         )
+
+        #Draw collision tiles (gray)
+        for tx, ty in collision_tiles:
+            col_screen_x = tx * TILE_SIZE - camera_x
+            col_screen_y = ty * TILE_SIZE - camera_y
+            pygame.draw.rect(
+                screen,
+                (100, 100, 100),
+                (col_screen_x, col_screen_y, TILE_SIZE, TILE_SIZE)
+            )
 
         # Draw player (sprite if available, otherwise fallback rectangle)
         player_screen_x = player_x - camera_x
