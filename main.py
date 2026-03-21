@@ -11,6 +11,9 @@ def start_battle(screen):
     pygame.mixer.music.fadeout(1000)  
     pygame.mixer.music.load("assets/moosic/copyrightedplaceholdermusic.mp3")
     pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.68)  
+    vol = pygame.mixer.music.get_volume()
+    print("moosic volume for battle is",vol)
     # If transition completed (didn't quit), start the battle
     if run_transition(screen):
         result = run_battle(screen)
@@ -19,6 +22,7 @@ def start_battle(screen):
         try:
             pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
             pygame.mixer.music.play(-1)
+            print("overworldy is" + vol)
         except Exception:
             pass
         return result
@@ -34,6 +38,8 @@ def play(screen):
     # Optional: Change music for overworld
     pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
     pygame.mixer.music.play(-1)
+    vol = pygame.mixer.music.get_volume()
+    print("overworldy is", vol)
     
     inventory = None  # Will be created on first run_overworld call
     
@@ -63,6 +69,9 @@ def main():
     # Load music
     pygame.mixer.music.load("assets/moosic/Main-Menu-Theme.mp3")
     pygame.mixer.music.play(-1)
+    vol = pygame.mixer.music.get_volume()
+    print("moosic volume for menu is", vol)
+
     
     # Run the main menu first
     my_menu = main_menu(screen, lambda: play(screen))
