@@ -380,7 +380,6 @@ class BattleSystem:
             self.state = "animating"
 
     def use_item(self, item_name):
-        """Use an item from the player's inventory."""
         heal = self.player.use_item(item_name)
         if heal > 0:
             self.message = f"Used {item_name}! Healed {heal} HP!"

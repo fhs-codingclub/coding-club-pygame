@@ -20,14 +20,6 @@ WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 ENCOUNTER_CHANCE = 0  
 
 def run_overworld(screen, inventory=None, player_state=None):
-    """Run the overworld screen.
-    Args:
-        screen: The pygame display surface
-        inventory: Optional InventorySystem instance. If None, creates a new one.
-        player_state: Optional dict with player position/direction/camera
-    Returns:
-        Tuple of (action_string, inventory, player_state)
-    """
     # --- Create or use existing inventory ---
     if inventory is None:
         inventory = InventorySystem(WIDTH, HEIGHT)
@@ -59,7 +51,7 @@ def run_overworld(screen, inventory=None, player_state=None):
     target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
 
     def build_state():
-        """Helper: pack all local vars into a state dict to return."""
+        
         return {
             'player_x_grid': player_x_grid,
             'player_y_grid': player_y_grid,
@@ -73,7 +65,7 @@ def run_overworld(screen, inventory=None, player_state=None):
         }
 
     def clamp_camera(px, py):
-        """Center camera on the player while staying inside world bounds."""
+        
         half_tile = TILE_SIZE // 2
         cam_x = int(px + half_tile - WIDTH // 2)
         cam_y = int(py + half_tile - HEIGHT // 2)
