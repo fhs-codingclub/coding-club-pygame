@@ -13,7 +13,7 @@ def start_battle(screen):
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.68)  
     vol = pygame.mixer.music.get_volume()
-    print("moosic volume for battle is",vol)
+    print("moosic volume for battle is", vol)
     # If transition completed (didn't quit), start the battle
     if run_transition(screen):
         result = run_battle(screen)
@@ -22,7 +22,7 @@ def start_battle(screen):
         try:
             pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
             pygame.mixer.music.play(-1)
-            print("overworldy is" + vol)
+            print("overworldy is", vol)
         except Exception:
             pass
         return result
@@ -35,27 +35,31 @@ def play(screen):
     pygame.display.set_caption("Adventure Time!")
     pygame.mixer.music.fadeout(1000) 
 
-    # Optional: Change music for overworld
     pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
     pygame.mixer.music.play(-1)
     vol = pygame.mixer.music.get_volume()
     print("overworldy is", vol)
     
-    inventory = None  # Will be created on first run_overworld call
-    
+    inventory = None
+    player_state = None
+
     while True:
-        result, inventory = run_overworld(screen, inventory)
-        
+        result, inventory, player_state = run_overworld(screen, inventory, player_state)
+
         if result == "QUIT":
             return
-        elif result == "START_BATTLE":
+        elif result in ("START_BATTLE", "RANDOM_BATTLE"):
+            # Snapshot state BEFORE battle so we restore it after
+            saved_state = dict(player_state) if player_state else None
+            saved_inventory = inventory
+
             battle_result = start_battle(screen)
             pygame.display.set_caption("Adventure Time!")
-            if battle_result == "QUIT":
-                return
-        elif result == "RANDOM_BATTLE":
-            battle_result = start_battle(screen)
-            pygame.display.set_caption("Adventure Time!")
+
+            # Restore pre-battle position so player resumes where they left off
+            player_state = saved_state
+            inventory = saved_inventory
+
             if battle_result == "QUIT":
                 return
 
@@ -72,7 +76,6 @@ def main():
     vol = pygame.mixer.music.get_volume()
     print("moosic volume for menu is", vol)
 
-    
     # Run the main menu first
     my_menu = main_menu(screen, lambda: play(screen))
     
