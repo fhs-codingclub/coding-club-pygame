@@ -1,14 +1,16 @@
 import pygame
 import random
 import os
+import json
 
 # --- Colors ---
 GRAY = (100, 100, 100)
 WHITE = (255, 255, 255)
 
+with open('jason/test.json', 'r') as file:
+    data = json.load(file)
 
 class InventorySystem:
-    """Inventory system that can be integrated into other game screens."""
     
     def __init__(self, screen_width=400, screen_height=300):
         self.screen_width = screen_width
@@ -40,7 +42,6 @@ class InventorySystem:
         self.font4 = pygame.font.Font(None, 12 * round(self.UI_SCALE))
     
     def _setup_inventory_rects(self):
-        """Setup the clickable rectangles for inventory slots."""
         UI = self.UI_SCALE
         self.inventory_list = [
             pygame.Rect(115*UI, 95*UI, 35*UI, 45*UI),
@@ -57,8 +58,6 @@ class InventorySystem:
         self.use_button_rect = pygame.Rect(245*UI, 255*UI, 35*UI, 20*UI)
     
     def add_item(self, item):
-        """Add an item to the first available inventory slot.
-        Returns True if successful, False if inventory is full."""
         for i in range(8):
             if self.inventory[i] == "air":
                 self.inventory[i] = item
@@ -66,13 +65,11 @@ class InventorySystem:
         return False
     
     def toggle(self):
-        """Toggle the inventory open/closed."""
         self.is_open = not self.is_open
         if not self.is_open:
             self.inventory_selected = 10
     
     def handle_event(self, event):
-        """Handle pygame events for the inventory. Returns True if event was consumed."""
         if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
             self.toggle()
             return True
@@ -87,7 +84,6 @@ class InventorySystem:
         return False
     
     def _handle_click(self):
-        """Handle mouse click in inventory."""
         if self.inventory_hover == 20:  # Use button
             self._use_selected_item()
         elif self.inventory_hover == 21:  # Armor slot
@@ -98,7 +94,6 @@ class InventorySystem:
             self._handle_slot_click(self.inventory_hover)
     
     def _use_selected_item(self):
-        """Use the currently selected item."""
         if self.inventory_selected == 10 or self.inventory[self.inventory_selected] == "air":
             return
         
@@ -122,7 +117,6 @@ class InventorySystem:
         self.inventory_selected = 10
     
     def _unequip_armor(self):
-        """Unequip armor and put it in inventory."""
         if self.armor == "air":
             return
         if self.add_item(self.armor):
@@ -130,7 +124,6 @@ class InventorySystem:
             self.defense = 0
     
     def _unequip_weapon(self):
-        """Unequip weapon and put it in inventory."""
         if self.weapon == "air":
             return
         if self.add_item(self.weapon):
@@ -138,7 +131,6 @@ class InventorySystem:
             self.attack = 0
     
     def _handle_slot_click(self, slot_index):
-        """Handle clicking on an inventory slot."""
         if self.inventory_selected == slot_index:
             self.inventory_selected = 10
         elif self.inventory_selected == 10:
@@ -150,7 +142,6 @@ class InventorySystem:
             self.inventory_selected = 10
     
     def update(self):
-        """Update inventory state (check mouse hover)."""
         if not self.is_open:
             return
         
@@ -172,7 +163,6 @@ class InventorySystem:
             self.inventory_hover = 22
     
     def draw(self, screen):
-        """Draw the inventory UI on the given screen."""
         if not self.is_open:
             return
         

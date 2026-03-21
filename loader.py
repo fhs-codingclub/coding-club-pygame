@@ -13,7 +13,6 @@ SPIRAL_SPEED = 5
 
 
 def run_transition(screen):
-    """Run the spiral transition effect. Returns True if completed, False if quit."""
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Arial", 36)
 

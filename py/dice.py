@@ -3,29 +3,14 @@ import time
 
 
 def roll_dice(num_dice=1, num_sides=20):
-    """Generate a list of random dice rolls.
-
-    Args:
-        num_dice (int): The number of dice rolls to generate.
-        num_sides (int): The number of sides on each die.
-
-    Returns:
-        list: A list containing the results of the dice rolls.
-    """
     return [random.randint(1, num_sides) for _ in range(num_dice)]
 
 
 def roll_d20():
-    """Roll a single D20 and return the result."""
     return random.randint(1, 20)
 
 
 def roll_attack():
-    """Roll a D20 for an attack and determine the outcome.
-    
-    Returns:
-        dict: Contains 'roll', 'result_type', 'damage_dice', 'damage_sides', and 'multiplier'
-    """
     roll = roll_d20()
     multiplier = 1.1  # (proficiency damage multiplier)
     
@@ -82,15 +67,6 @@ def roll_attack():
 
 
 def calculate_damage(attack_result, base_attack=0):
-    """Calculate total damage based on attack roll result.
-    
-    Args:
-        attack_result: Dict from roll_attack()
-        base_attack: Base attack stat to add to damage
-        
-    Returns:
-        int: Total damage dealt
-    """
     if attack_result['multiplier'] == 0:
         return 0
     
@@ -101,13 +77,11 @@ def calculate_damage(attack_result, base_attack=0):
 
 # Legacy function for backwards compatibility
 def generate_random_dice_rolls(num_rolls, num_sides=20):
-    """Generate a list of random dice rolls (legacy function)."""
     return roll_dice(num_rolls, num_sides)
 
 
 # Example usage:
 def when_life_gives_you_lemons():  # i dont care if you question the name of this function i love it and you need to deal with it. insperational
-    """Test function demonstrating the dice system."""
     multiplier = 1.1  # (proficiency damage multiplier)
     
     rolls = roll_dice(1, 20)

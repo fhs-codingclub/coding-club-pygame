@@ -7,7 +7,6 @@ from menu import main_menu
 from overworld import run_overworld
 
 def start_battle(screen):
-    """Handles the transition and battle sequence"""
     pygame.mixer.music.fadeout(1000)  
     pygame.mixer.music.load("assets/moosic/copyrightedplaceholdermusic.mp3")
     pygame.mixer.music.play(-1)
@@ -32,7 +31,6 @@ def start_battle(screen):
         return "QUIT"
 
 def play(screen):
-    """Main game loop - runs the overworld"""
     pygame.display.set_caption("Adventure Time!")
     pygame.mixer.music.fadeout(1000) 
 
