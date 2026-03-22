@@ -4,12 +4,13 @@ class NPC(pygame.sprite.Sprite):
     def __init__(self, name, x, y, dialogue_list, tile_size=48):
         super().__init__()
         # 1. Load and Crop
-        full_sheet = pygame.image.load("assets/img/vivi.png").convert_alpha()
-        sprite_rect = pygame.Rect(0, 0, 64, 128)
-        self.image = full_sheet.subsurface(sprite_rect)
-        
-        # 2. Scale to fit your tile size (Optional but recommended)
-        self.image = pygame.transform.scale(self.image, (tile_size, tile_size))
+        try:
+            self.image = pygame.image.load("assets/img/vivi-right.png").convert_alpha()
+            self.image = pygame.transform.scale(self.image, (tile_size, tile_size))
+        except Exception as e:
+            print(f"Error loading NPC image: {e}")
+            self.image = pygame.Surface((tile_size, tile_size))
+            self.image.fill((255, 0, 255))
 
         # 3. SET THE GRID COORDINATES (This fixes your error!)
         self.grid_x = x

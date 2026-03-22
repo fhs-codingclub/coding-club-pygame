@@ -14,15 +14,18 @@ def start_battle(screen):
     vol = pygame.mixer.music.get_volume()
     print("moosic volume for battle is", vol)
     
-    # If transition completed (didn't quit), start the battle
+    # If transition completed, start the battle
     if run_transition(screen):
         result = run_battle(screen)
-        # After battle, restore/continue overworld music
+        
+         # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)
         try:
             pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
             pygame.mixer.music.play(-1)
-            print("overworldy is", vol)
+            pygame.mixer.music.set_volume(0.2)
+            vol = pygame.mixer.music.get_volume()
+            print("overworld Volume is set to:", vol)
         except Exception:
             pass
         return result
@@ -36,8 +39,9 @@ def play(screen):
 
     pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
     pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.2)
     vol = pygame.mixer.music.get_volume()
-    print("overworldy is", vol)
+    print("overworld Volume is set to:", vol)
     
     inventory = None
     player_state = None
@@ -48,14 +52,15 @@ def play(screen):
         if result == "QUIT":
             return
         elif result in ("START_BATTLE", "RANDOM_BATTLE"):
-            # Snapshot state BEFORE battle so we restore it after
+            
+            # Keep state of player fix for bug
             saved_state = dict(player_state) if player_state else None
             saved_inventory = inventory
 
             battle_result = start_battle(screen)
             pygame.display.set_caption("Adventure Time!")
 
-            # Restore pre-battle position so player resumes where they left off
+            # Restore the players state 
             player_state = saved_state
             inventory = saved_inventory
 
@@ -63,9 +68,10 @@ def play(screen):
                 return
 
 def main():
+    
     # Initialize
     pygame.init()
-    pygame.display.set_caption("DEBUG!!!")
+    pygame.display.set_caption("Wood Hollow Academy")
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.mixer.init()
     

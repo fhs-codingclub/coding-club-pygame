@@ -230,7 +230,7 @@ def run_overworld(screen, inventory=None, player_state=None):
         camera_x, camera_y = clamp_camera(player_x, player_y)
 
         # Draw Everything
-        # Draw grass pattern (only tiles visible in the current camera view)
+        # Draw Tile Pattern
         start_col = max(0, camera_x // TILE_SIZE)
         end_col = min(WORLD_COLS, (camera_x + WIDTH) // TILE_SIZE + 2)
         start_row = max(0, camera_y // TILE_SIZE)
@@ -261,16 +261,6 @@ def run_overworld(screen, inventory=None, player_state=None):
             (200, 50, 50),
             (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE)
         )
-
-        #Draw collision tiles (gray)
-        for tx, ty in collision_tiles:
-            col_screen_x = tx * TILE_SIZE - camera_x
-            col_screen_y = ty * TILE_SIZE - camera_y
-            pygame.draw.rect(
-                screen,
-                (100, 100, 100),
-                (col_screen_x, col_screen_y, TILE_SIZE, TILE_SIZE)
-            )
         
         # Draw NPCs (blue)
         for npc in npc_list:
@@ -312,7 +302,7 @@ def run_overworld(screen, inventory=None, player_state=None):
 
         # Draw UI text
         font = pygame.font.Font(None, 24)
-        text = font.render("Press SPACE to test battle, E for inventory", True, (255, 255, 255))
+        text = font.render("E for inventory", True, (255, 255, 255))
         screen.blit(text, (10, 10))
 
         # Draw inventory (if open)

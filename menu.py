@@ -19,7 +19,7 @@ THEME_WIDGET_ALIGNMENT = pygame_menu.locals.ALIGN_CENTER
 def main_menu(surface, start_callback):
 	#Start callback function that runs when "Play" is clicked
 	La_carte = pygame_menu.Menu(
-	title="PYGAME YESSIR",
+	title="Wood Hollow Academy",
 	width=surface.get_width(),
 	height=surface.get_height(),
 	theme=MY_CUSTOM_THEME
