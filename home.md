@@ -2,13 +2,13 @@
 title: Game Design Document
 description: Welcome to the Official Wiki of the FHS Pygame
 published: true
-date: 2026-03-09T02:45:12.829Z
+date: 2026-03-22T19:15:52.191Z
 tags: 
 editor: markdown
 dateCreated: 2026-03-09T01:45:51.784Z
 ---
 
-# Game Overview *GAME NAME*
+# Game Overview *Wood Hollow Academy*
 **Genre** Top-down Python RPG
 **Current Version** Pre-alpha 
 
