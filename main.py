@@ -82,7 +82,8 @@ def main():
     print("moosic volume for menu is", vol)
 
     # Run the main menu first
-    my_menu = main_menu(screen, lambda: play(screen))
+    surface_ref = [screen]
+    my_menu = main_menu(surface_ref, lambda: play(surface_ref[0]))
     
     # Menu loop
     while my_menu.is_enabled():
