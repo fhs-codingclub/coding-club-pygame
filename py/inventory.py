@@ -171,6 +171,7 @@ class InventorySystem:
             color = (200, 200, 200) if i == self.inventory_selected else WHITE
             pygame.draw.rect(screen, color, rect)
             if self.inventory[i] != "air":
+<<<<<<< HEAD
                 pygame.draw.rect(screen, (0, 150, 255), rect.inflate(-6, -6))
                 name_surf = self.font3.render(self.inventory[i][0], True, (0, 0, 0))
                 screen.blit(name_surf, name_surf.get_rect(center=rect.center))
@@ -186,3 +187,78 @@ class InventorySystem:
             screen.blit(self.font3.render(item[1], True, (0, 0, 0)), (110*UI, 275*UI))
             pygame.draw.rect(screen, (200, 200, 200), self.use_button_rect)
             screen.blit(self.font2.render("Use", True, (0, 0, 0)), (247*UI, 258*UI))
+=======
+                img = pygame.transform.scale(pygame.image.load(self.inventory[i][4]), (int(35*UI), int(45*UI)))
+                screen.blit(img, rect.topleft)
+        
+        # Draw armor slot
+        pygame.draw.rect(screen, WHITE, self.armor_space)
+        if self.armor != "air":
+            img = pygame.transform.scale(pygame.image.load(self.armor[4]), (int(35*UI), int(45*UI)))
+            screen.blit(img, self.armor_space.topleft)
+        
+        # Draw weapon slot
+        pygame.draw.rect(screen, WHITE, self.weapon_space)
+        if self.weapon != "air":
+            img = pygame.transform.scale(pygame.image.load(self.weapon[4]), (int(35*UI), int(45*UI)))
+            screen.blit(img, self.weapon_space.topleft)
+        
+        # Draw item description if something is selected
+        if self.inventory_selected != 10:
+            item = self.inventory[self.inventory_selected]
+            if item == "air":
+                desc_text = self.font3.render("Literally nothing", True, (0, 0, 0))
+                screen.blit(desc_text, (110*UI, 260*UI))
+            else:
+                title_text = self.font2.render(item[0], True, (0, 0, 0))
+                desc_text = self.font3.render(item[1], True, (0, 0, 0))
+                screen.blit(title_text, (110*UI, 260*UI))
+                screen.blit(desc_text, (110*UI, 275*UI))
+                pygame.draw.rect(screen, (200, 200, 200), self.use_button_rect)
+                use_text = self.font2.render("Use", True, (0, 0, 0))
+                screen.blit(use_text, (250*UI, 260*UI))
+
+
+# --- Legacy standalone mode (for testing) ---
+if __name__ == "__main__":
+    pygame.init()
+    
+    WIDTH = 600
+    HEIGHT = int(WIDTH * (3/4))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Inventory Test")
+    
+    clock = pygame.time.Clock()
+    inventory_system = InventorySystem(WIDTH, HEIGHT)
+    
+    # Add some test items
+    item1 = data.item1
+    item2 = data.item2
+    item3 = data.item3
+    inventory_system.add_item(item1)
+    inventory_system.add_item(item2)
+    inventory_system.add_item(item3)
+    
+    running = True
+    while running:
+        clock.tick(60)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            inventory_system.handle_event(event)
+        
+        inventory_system.update()
+        
+        screen.fill((255, 255, 255))
+        inventory_system.draw(screen)
+        
+        if not inventory_system.is_open:
+            font = pygame.font.Font(None, 30)
+            text = font.render("Press E to open inventory", True, (0, 0, 0))
+            screen.blit(text, (WIDTH//2 - 100, HEIGHT//2))
+        
+        pygame.display.update()
+    
+    pygame.quit()
+>>>>>>> f54ad20 (Fixed movement issue + updated inventory to work with the JSON file)
