@@ -34,7 +34,7 @@ WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 # Random encounter settings
 ENCOUNTER_CHANCE = 0
 
-pygame.key.set_repeat(100)
+
 
 
 def run_overworld(real_screen, inventory=None, player_state=None):
@@ -254,6 +254,7 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 
     while True:
         clock.tick(60)
+        pygame.key.set_repeat(100)
 
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
         for event in pygame.event.get():
