@@ -141,9 +141,9 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 
                 nextx, nexty = player_x_grid, player_y_grid
                 potential_direction = None
-                if event.key == pygame.K_LSHIFT
+                if event.key == pygame.K_LSHIFT:
                     PLAYER_SPEED = 4
-                else
+                else:
                     PLAYER_SPEED = 2
 
                 if event.key == pygame.K_LEFT and player_x_grid > 0:
