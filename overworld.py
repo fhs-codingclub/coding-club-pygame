@@ -23,6 +23,8 @@ WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 # Random encounter settings
 ENCOUNTER_CHANCE = 0
 
+pygame.key.set_repeat(100)
+
 
 def run_overworld(real_screen, inventory=None, player_state=None):
     # logical surface — all drawing happens here at 640x480

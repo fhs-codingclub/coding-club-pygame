@@ -186,19 +186,19 @@ class InventorySystem:
             color = (200, 200, 200) if i == self.inventory_selected else WHITE
             pygame.draw.rect(screen, color, rect)
             if self.inventory[i] != "air":
-                img = pygame.transform.scale(self.inventory[i][4], (int(35*UI), int(45*UI)))
+                img = pygame.transform.scale(pygame.image.load(self.inventory[i][4]), (int(35*UI), int(45*UI)))
                 screen.blit(img, rect.topleft)
         
         # Draw armor slot
         pygame.draw.rect(screen, WHITE, self.armor_space)
         if self.armor != "air":
-            img = pygame.transform.scale(self.armor[4], (int(35*UI), int(45*UI)))
+            img = pygame.transform.scale(pygame.image.load(self.armor[4]), (int(35*UI), int(45*UI)))
             screen.blit(img, self.armor_space.topleft)
         
         # Draw weapon slot
         pygame.draw.rect(screen, WHITE, self.weapon_space)
         if self.weapon != "air":
-            img = pygame.transform.scale(self.weapon[4], (int(35*UI), int(45*UI)))
+            img = pygame.transform.scale(pygame.image.load(self.weapon[4]), (int(35*UI), int(45*UI)))
             screen.blit(img, self.weapon_space.topleft)
         
         # Draw item description if something is selected
@@ -230,9 +230,9 @@ if __name__ == "__main__":
     inventory_system = InventorySystem(WIDTH, HEIGHT)
     
     # Add some test items
-    item1 = ["sword", "A sharp sword", "weapon", 1, pygame.image.load("rocketship.gif")]
-    item2 = ["helmet", "A helmet", "armor", 1, pygame.image.load("download (1).png")]
-    item3 = ["apple", "An apple", "healing", 1, pygame.image.load("apple.png")]
+    item1 = data.item1
+    item2 = data.item2
+    item3 = data.item3
     inventory_system.add_item(item1)
     inventory_system.add_item(item2)
     inventory_system.add_item(item3)
