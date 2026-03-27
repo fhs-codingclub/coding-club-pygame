@@ -254,7 +254,36 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 
     while True:
         clock.tick(60)
-        pygame.key.set_repeat(100)
+
+        # Block of code for handling movement
+        if not moving and not inventory.is_open:
+            nextx, nexty = player_x_grid, player_y_grid
+            potential_direction = None
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LSHIFT]:
+                PLAYER_SPEED = 4
+            else:
+                PLAYER_SPEED = 2
+
+            if keys[pygame.K_LEFT] and player_x_grid > 0:
+                potential_direction = "left"
+                nextx -= 1
+            elif keys[pygame.K_RIGHT] and player_x_grid < WORLD_COLS - 1:
+                potential_direction = "right"
+                nextx += 1
+            elif keys[pygame.K_UP] and player_y_grid > 0:
+                potential_direction = "up"
+                nexty -= 1
+            elif keys[pygame.K_DOWN] and player_y_grid < WORLD_ROWS - 1:
+                potential_direction = "down"
+                nexty += 1
+
+            if potential_direction:
+                if (nextx, nexty) not in collision_tiles:
+                    direction = potential_direction
+                    moving = True
+                else:
+                    print(f"Bumped into a wall at {nextx}, {nexty} facing {potential_direction}")
 
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
         for event in pygame.event.get():
@@ -278,6 +307,7 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 
             if event.type == pygame.KEYDOWN and not moving and not inventory.is_open:
 
+<<<<<<< HEAD
                 nextx, nexty = player_x_grid, player_y_grid
                 potential_direction = None
                 keys = pygame.key.get_pressed()
@@ -320,6 +350,9 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 
                 elif event.key == pygame.K_SPACE:
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+                if event.key == pygame.K_SPACE:
+>>>>>>> fa1cda7 (fixed continuous movement causing problems)
                     if active_npc:
                         # 2. If yes, try to go to the next line
                         if not active_npc.advance_dialogue():
