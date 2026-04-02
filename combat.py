@@ -3,9 +3,13 @@ import random
 import os
 import sys
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 from inventory import InventorySystem
 >>>>>>> a9b55c5 (Uncrashed the game)
+=======
+from py import inventory
+>>>>>>> 9e0d462 (fix game crash when in battle)
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
 
