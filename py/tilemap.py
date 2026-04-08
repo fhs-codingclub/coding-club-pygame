@@ -27,7 +27,7 @@ def build_cave_map(world_cols, world_rows):
         grid[x][59] = EDGE
     for y in range(45, 60):
         grid[45][y] = EDGE
-        grid[63][y] = EDGE
+        grid[64][y] = EDGE
 
     # Build collision set from non-floor tiles
     collision = set()
