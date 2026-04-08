@@ -41,7 +41,7 @@ SPOILERS\!
 
 2019- Kara starts living at Woodhallow Academy
 
-2024- An above ground entrance to the underground starts to weaken
+
 
 2025- The story begins
 
