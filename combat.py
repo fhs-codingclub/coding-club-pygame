@@ -5,6 +5,7 @@ import random
 import os
 import sys
 from inventory import InventorySystem
+import inventory
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
 from dice import roll_attack, calculate_damage, roll_dice

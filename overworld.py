@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 import os
+import json
 
 # Add py folder to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
@@ -9,6 +10,9 @@ from inventory import InventorySystem
 from npc import NPC
 from tilemap import build_cave_map
 from loader import blit_letterboxed
+
+with open('jason/test.json', 'r') as file:
+    data = json.load(file)
 
 WIDTH = 640
 HEIGHT = 480
@@ -172,6 +176,9 @@ def run_overworld(real_screen, inventory=None, player_state=None):
                     if active_npc:
                         if not active_npc.advance_dialogue():
                             active_npc = None
+                            # This is for debug, remove before merging with main branch
+                            item1 = data["item1"]
+                            inventory.add_item(item1)
                     else:
                         for npc in npc_list:
                             if abs(player_x_grid - npc.grid_x) <= 1 and abs(player_y_grid - npc.grid_y) <= 1:

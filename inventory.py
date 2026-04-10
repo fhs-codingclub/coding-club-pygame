@@ -121,14 +121,14 @@ class InventorySystem:
             return
         if self.add_item(self.armor):
             self.armor = "air"
-            self.defense = 0
+            self.defense = 5
     
     def _unequip_weapon(self):
         if self.weapon == "air":
             return
         if self.add_item(self.weapon):
             self.weapon = "air"
-            self.attack = 0
+            self.attack = 15
     
     def _handle_slot_click(self, slot_index):
         if self.inventory_selected == slot_index:
