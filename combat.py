@@ -66,10 +66,10 @@ class Player(Combatant):
     def __init__(self):
         invent = inventory.InventorySystem()
         super().__init__("Hero", invent.maxhealth, invent.attack, invent.defense)
-        self.items = []
+        self.items = {}
         for i in range(8):
             if invent.inventory[i][2] = "healing":
-                self.items.append(invent.inventory[i][0])
+                self.items.add((invent.inventory[i][0]): 1)
         self.hp = invent.health
 
     def use_item(self, item_name):
