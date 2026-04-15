@@ -66,16 +66,19 @@ class Player(Combatant):
     def __init__(self):
         invent = inventory.InventorySystem()
         super().__init__("Hero", invent.maxhealth, invent.attack, invent.defense)
-        self.items = {"Hamburger": 3, "Lifeup": 1}
+        self.items = []
+        for i in range(8):
+            if invent.inventory[i][2] = "healing":
+                self.items.append(invent.inventory[i][0])
         self.hp = invent.health
 
     def use_item(self, item_name):
         if item_name in self.items and self.items[item_name] > 0:
             self.items[item_name] -= 1
-            if item_name == "Hamburger":
-                heal = 30
+            if item_name == "apple":
+                heal = 50
             elif item_name == "Lifeup":
-                heal = 60
+                heal = 100
             else:
                 heal = 20
             self.hp = min(self.max_hp, self.hp + heal)

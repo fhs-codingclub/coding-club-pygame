@@ -177,7 +177,7 @@ def run_overworld(real_screen, inventory=None, player_state=None):
                         if not active_npc.advance_dialogue():
                             active_npc = None
                             # This is for debug, remove before merging with main branch
-                            item1 = data["item1"]
+                            item1 = data["item3"]
                             inventory.add_item(item1)
                     else:
                         for npc in npc_list:
