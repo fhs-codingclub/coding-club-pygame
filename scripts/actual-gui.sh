@@ -1,3 +1,10 @@
+echo "Starting virtual display..."
+export XDG_RUNTIME_DIR=/tmp/runtime-$(whoami)
+mkdir -p "$XDG_RUNTIME_DIR"
+Xvfb :1 -screen 0 1024x768x24 &
+export DISPLAY=:1
+fluxbox &
+
 echo "Starting VNC server..."
 x11vnc -display :1 -nopw -forever -shared -rfbport 5900 &
 
