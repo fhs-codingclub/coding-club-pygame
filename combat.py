@@ -4,6 +4,7 @@ import pygame
 import random
 import os
 import sys
+import overworld
 from inventory import InventorySystem
 import inventory
 
@@ -65,11 +66,13 @@ class Combatant:
 class Player(Combatant):
     def __init__(self):
         invent = inventory.InventorySystem()
+        # This needs to get the inventory used in the overworld, right now it does not work.
         super().__init__("Hero", invent.maxhealth, invent.attack, invent.defense)
         self.items = {}
         for i in range(8):
-            if invent.inventory[i][2] = "healing":
-                self.items.add((invent.inventory[i][0]): 1)
+            print(invent.inventory[i])
+            if invent.inventory[i][2] == "healing":
+                self.items[invent.inventory[i][0]] = 1
         self.hp = invent.health
 
     def use_item(self, item_name):
