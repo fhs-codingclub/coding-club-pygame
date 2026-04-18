@@ -11,7 +11,7 @@ def start_battle(screen, player):
     pygame.mixer.music.fadeout(1000)  
     pygame.mixer.music.load("py/assets/moosic/copyrightedplaceholdermusic.mp3")
     pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.2)  
+    pygame.mixer.music.set_volume(0.2)
     vol = pygame.mixer.music.get_volume()
     print("moosic volume for battle is", vol)
     
@@ -31,7 +31,6 @@ def start_battle(screen, player):
             pass
         return result
     else:
-        # Transition was quit
         return "QUIT"
 
 def play(screen):
@@ -50,32 +49,24 @@ def play(screen):
     player_state = None
 
     while True:
-        result, inventory, player_state = run_overworld(screen, inventory, player_state)
-
+        result, inventory, player_state = run_overworld(real_screen, inventory, player_state)
         if result == "QUIT":
             return
         elif result in ("START_BATTLE", "RANDOM_BATTLE"):
-            
-            # Keep state of player fix for bug
             saved_state = dict(player_state) if player_state else None
             saved_inventory = inventory
 
             battle_result = start_battle(screen, player)
             pygame.display.set_caption("Adventure Time!")
-
-            # Restore the players state 
             player_state = saved_state
             inventory = saved_inventory
-
             if battle_result == "QUIT":
                 return
 
+
 def main():
-    
-    # Initialize
     pygame.init()
     pygame.display.set_caption("Wood Hollow Academy")
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.mixer.init()
     
     # Load music
@@ -84,24 +75,26 @@ def main():
     vol = pygame.mixer.music.get_volume()
     print("moosic volume for menu is", vol)
 
-    # Run the main menu first
-    surface_ref = [screen]
     my_menu = main_menu(surface_ref, lambda: play(surface_ref[0]))
-    
-    # Menu loop
+
+    clock = pygame.time.Clock()
     while my_menu.is_enabled():
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        
+
+        # Menu draws directly to the window — pygame_menu handles its own sizing
+        surface_ref[0].fill((0, 0, 0))
         my_menu.update(events)
-        my_menu.draw(screen)
-        pygame.display.update()
-    
+        my_menu.draw(surface_ref[0])
+        pygame.display.flip()
+        clock.tick(60)
+
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()

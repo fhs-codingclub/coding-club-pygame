@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
 from inventory import InventorySystem
 from npc import NPC
 from tilemap import build_cave_map
+from loader import blit_letterboxed
 
 WIDTH = 640
 HEIGHT = 480
@@ -20,9 +21,15 @@ WORLD_WIDTH = WORLD_COLS * TILE_SIZE
 WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 
 # Random encounter settings
-ENCOUNTER_CHANCE = 0  
+ENCOUNTER_CHANCE = 0
 
-def run_overworld(screen, inventory=None, player_state=None):
+
+
+
+def run_overworld(real_screen, inventory=None, player_state=None):
+    # logical surface — all drawing happens here at 640x480
+    logical = pygame.Surface((WIDTH, HEIGHT))
+
     # --- Create or use existing inventory ---
     if inventory is None:
         inventory = InventorySystem(WIDTH, HEIGHT)
@@ -48,21 +55,17 @@ def run_overworld(screen, inventory=None, player_state=None):
     moving = False
     PLAYER_SPEED = 2
 
-    # Store the initial target position so it doesn't drift each re-entry.
-    # Only set it once based on the ORIGINAL spawn, not the restored position.
     target_x_grid = player_state.get('target_x_grid', player_x_grid + 5) if player_state else player_x_grid + 5
     target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
 
-    # LOL its hardcoded rn but idc use for loops or wtv to make walls and stuff later, I kinda just wanted to test the battle trigger so I threw this together real quick
     tile_grid, collision_tiles = build_cave_map(WORLD_COLS, WORLD_ROWS)
 
     npc_list = [
         NPC("John", 53, 48, ["SUP dude", "There are many enemies here!", "Watch out for the red tiles!"], TILE_SIZE)
-    ]  # NPC implementation
+    ]
 
-    active_npc = None  # Track which NPC we're currently talking to
+    active_npc = None
 
-    #Add npc's to collision tiles so player can't walk through them
     for npc in npc_list:
         collision_tiles.add((npc.grid_x, npc.grid_y))
 
@@ -80,7 +83,6 @@ def run_overworld(screen, inventory=None, player_state=None):
         }
 
     def clamp_camera(px, py):
-        
         half_tile = TILE_SIZE // 2
         cam_x = int(px + half_tile - WIDTH // 2)
         cam_y = int(py + half_tile - HEIGHT // 2)
@@ -90,27 +92,32 @@ def run_overworld(screen, inventory=None, player_state=None):
         cam_y = max(0, min(max_cam_y, cam_y))
         return cam_x, cam_y
 
-    # Ensure target stays in bounds
     target_x_grid = min(WORLD_COLS - 1, max(0, target_x_grid))
     target_y_grid = min(WORLD_ROWS - 1, max(0, target_y_grid))
     camera_x, camera_y = clamp_camera(player_x, player_y)
 
     clock = pygame.time.Clock()
 
-    #Load Tile assets
     def load_tile(path, size):
         try:
             img = pygame.image.load(path).convert_alpha()
             return pygame.transform.scale(img, (size, size))
         except Exception:
             return None
+<<<<<<< HEAD
     
     tile_floor  = load_tile(os.path.join("py", "assets","img", "limestone_floor.png"), TILE_SIZE)
     tile_wall   = load_tile(os.path.join("py", "assets", "img", "Stone_wall.png"), TILE_SIZE)
     tile_edge   = load_tile(os.path.join("py", "assets", "img", "Stone_frame.png"), TILE_SIZE)
     tile_lime_edge = load_tile(os.path.join("py", "assets", "img", "Limestone_frame.png"), TILE_SIZE)
+=======
 
-    # --- Load player sprite once (falls back to a rectangle if not found) ---
+    tile_floor     = load_tile(os.path.join("assets", "img", "limestone_floor.png"), TILE_SIZE)
+    tile_wall      = load_tile(os.path.join("assets", "img", "Stone_wall.png"), TILE_SIZE)
+    tile_edge      = load_tile(os.path.join("assets", "img", "Stone_frame.png"), TILE_SIZE)
+    tile_lime_edge = load_tile(os.path.join("assets", "img", "Limestone_frame.png"), TILE_SIZE)
+>>>>>>> 8f8cd5b90ca3798bf12080b02e8b7ee020b5e1ef
+
     player_sprite = None
     possible_paths = [
         os.path.join("py", "assets", "img", "kim-forward.png"),
@@ -129,72 +136,59 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     while True:
         clock.tick(60)
-        screen.fill((26, 28, 44))  # Background for academia cave dark grey
+
+        # Block of code for handling movement
+        if not moving and not inventory.is_open:
+            nextx, nexty = player_x_grid, player_y_grid
+            potential_direction = None
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LSHIFT]:
+                PLAYER_SPEED = 4
+            else:
+                PLAYER_SPEED = 2
+
+            if keys[pygame.K_LEFT] and player_x_grid > 0:
+                potential_direction = "left"
+                nextx -= 1
+            elif keys[pygame.K_RIGHT] and player_x_grid < WORLD_COLS - 1:
+                potential_direction = "right"
+                nextx += 1
+            elif keys[pygame.K_UP] and player_y_grid > 0:
+                potential_direction = "up"
+                nexty -= 1
+            elif keys[pygame.K_DOWN] and player_y_grid < WORLD_ROWS - 1:
+                potential_direction = "down"
+                nexty += 1
+
+            if potential_direction:
+                if (nextx, nexty) not in collision_tiles:
+                    direction = potential_direction
+                    moving = True
+                else:
+                    print(f"Bumped into a wall at {nextx}, {nexty} facing {potential_direction}")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return ("QUIT", inventory, build_state())
 
-            # Let inventory handle its events first
             if inventory.handle_event(event):
-                continue  # Event was consumed by inventory
+                continue
 
-            # Grid Movement Input (only when inventory is closed)
             if event.type == pygame.KEYDOWN and not moving and not inventory.is_open:
 
-                nextx, nexty = player_x_grid, player_y_grid
-                potential_direction = None
-
-                if event.key == pygame.K_LEFT and player_x_grid > 0:
-                    potential_direction = "left"
-                    nextx -= 1
-                elif event.key == pygame.K_RIGHT and player_x_grid < WORLD_COLS - 1:
-                    potential_direction = "right"
-                    nextx += 1
-                elif event.key == pygame.K_UP and player_y_grid > 0:
-                    potential_direction = "up"
-                    nexty -= 1
-                elif event.key == pygame.K_DOWN and player_y_grid < WORLD_ROWS - 1:
-                    potential_direction = "down"
-                    nexty += 1
-                elif event.key == pygame.K_a and player_x_grid > 0:
-                    potential_direction = "left"
-                    nextx -= 1
-                elif event.key == pygame.K_d and player_x_grid < WORLD_COLS - 1:
-                    potential_direction = "right"
-                    nextx += 1
-                elif event.key == pygame.K_w and player_y_grid > 0:
-                    potential_direction = "up"
-                    nexty -= 1
-                elif event.key == pygame.K_s and player_y_grid < WORLD_ROWS - 1:
-                    potential_direction = "down"
-                    nexty += 1
-
-                if potential_direction:
-                    if (nextx, nexty) not in collision_tiles:
-                        direction = potential_direction
-                        moving = True
-                        direction = potential_direction
-                    else: 
-                        print(f"Bumped into a wall at {nextx}, {nexty} facing {potential_direction}")
-                        pass
-                
-                elif event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE:
                     if active_npc:
                         if not active_npc.advance_dialogue():
                             active_npc = None
-                    else: 
+                    else:
                         for npc in npc_list:
                             if abs(player_x_grid - npc.grid_x) <= 1 and abs(player_y_grid - npc.grid_y) <= 1:
                                 npc.is_talking = True
                                 active_npc = npc
                                 break
-        
 
-        # Update inventory (for mouse hover detection)
         inventory.update()
 
-        # Interpolation (Smooth sliding between tiles) - only when inventory closed
         if moving and not inventory.is_open:
             if direction == "up":
                 player_y -= PLAYER_SPEED
@@ -217,30 +211,28 @@ def run_overworld(screen, inventory=None, player_state=None):
                     moving = False
                     player_x_grid += 1
 
-            # When movement completes, check for random encounter
             if not moving:
                 if random.random() < ENCOUNTER_CHANCE:
                     return ("RANDOM_BATTLE", inventory, build_state())
-                
-            # Check for battle trigger tile (red tile)
+
                 if player_x_grid == target_x_grid and player_y_grid == target_y_grid:
                     return ("START_BATTLE", inventory, build_state())
 
-        # Update camera each frame
         camera_x, camera_y = clamp_camera(player_x, player_y)
 
-        # Draw Everything
-        # Draw Tile Pattern
+        # --- Draw everything to logical surface ---
+        logical.fill((26, 28, 44))
+
         start_col = max(0, camera_x // TILE_SIZE)
-        end_col = min(WORLD_COLS, (camera_x + WIDTH) // TILE_SIZE + 2)
+        end_col   = min(WORLD_COLS, (camera_x + WIDTH) // TILE_SIZE + 2)
         start_row = max(0, camera_y // TILE_SIZE)
-        end_row = min(WORLD_ROWS, (camera_y + HEIGHT) // TILE_SIZE + 2)
-        
+        end_row   = min(WORLD_ROWS, (camera_y + HEIGHT) // TILE_SIZE + 2)
+
         tile_images = {
             0: tile_floor,
             1: tile_wall,
             2: tile_edge,
-            3: None,  # VOID = just background color
+            3: None,  # VOID
         }
 
         for gx in range(start_col, end_col):
@@ -250,62 +242,54 @@ def run_overworld(screen, inventory=None, player_state=None):
                 sx = gx * TILE_SIZE - camera_x
                 sy = gy * TILE_SIZE - camera_y
                 if img:
-                    screen.blit(img, (sx, sy))
+                    logical.blit(img, (sx, sy))
 
-        # VOID tiles just show the dark background, no blit needed
-        # Draw battle trigger tile (red = special battle spot)
+        # Battle trigger tile (red)
         target_screen_x = target_x_grid * TILE_SIZE - camera_x
         target_screen_y = target_y_grid * TILE_SIZE - camera_y
-        pygame.draw.rect(
-            screen,
-            (200, 50, 50),
-            (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE)
-        )
-        
-        # Draw NPCs (blue)
+        pygame.draw.rect(logical, (200, 50, 50),
+                         (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE))
+
+        # NPCs
         for npc in npc_list:
             npc_screen_x = npc.grid_x * TILE_SIZE - camera_x
             npc_screen_y = npc.grid_y * TILE_SIZE - camera_y
-            screen.blit(npc.image, (npc_screen_x, npc_screen_y))
+            logical.blit(npc.image, (npc_screen_x, npc_screen_y))
 
+        # Dialogue box
         if active_npc and active_npc.is_talking:
-            # Draw dialogue box background
             box_rect = pygame.Rect(20, HEIGHT - 120, WIDTH - 40, 100)
-            pygame.draw.rect(screen, (20, 20, 40), box_rect, border_radius=8)
-            pygame.draw.rect(screen, (255, 255, 255), box_rect, width=2, border_radius=8)
-            
-            # Draw NPC name
+            pygame.draw.rect(logical, (20, 20, 40), box_rect, border_radius=8)
+            pygame.draw.rect(logical, (255, 255, 255), box_rect, width=2, border_radius=8)
+
             font = pygame.font.Font(None, 28)
             name_surf = font.render(active_npc.name, True, (255, 220, 100))
-            screen.blit(name_surf, (box_rect.x + 12, box_rect.y + 10))
-            
-            # Draw current dialogue line
+            logical.blit(name_surf, (box_rect.x + 12, box_rect.y + 10))
+
             line_surf = font.render(active_npc.get_current_line(), True, (255, 255, 255))
-            screen.blit(line_surf, (box_rect.x + 12, box_rect.y + 40))
-            
-            # Draw "press space" prompt
+            logical.blit(line_surf, (box_rect.x + 12, box_rect.y + 40))
+
             small_font = pygame.font.Font(None, 20)
             prompt = small_font.render("SPACE to continue...", True, (150, 150, 150))
-            screen.blit(prompt, (box_rect.x + 12, box_rect.y + 72))
+            logical.blit(prompt, (box_rect.x + 12, box_rect.y + 72))
 
-        # Draw player (sprite if available, otherwise fallback rectangle)
+        # Player
         player_screen_x = player_x - camera_x
         player_screen_y = player_y - camera_y
         if player_sprite:
-            screen.blit(player_sprite, (player_screen_x, player_screen_y))
+            logical.blit(player_sprite, (player_screen_x, player_screen_y))
         else:
-            pygame.draw.rect(
-                screen,
-                (50, 100, 200),
-                (player_screen_x, player_screen_y, TILE_SIZE, TILE_SIZE)
-            )
+            pygame.draw.rect(logical, (50, 100, 200),
+                             (player_screen_x, player_screen_y, TILE_SIZE, TILE_SIZE))
 
-        # Draw UI text
-        font = pygame.font.Font(None, 24)
-        text = font.render("E for inventory", True, (255, 255, 255))
-        screen.blit(text, (10, 10))
+        # UI text
+        ui_font = pygame.font.Font(None, 24)
+        text = ui_font.render("E for inventory", True, (255, 255, 255))
+        logical.blit(text, (10, 10))
 
-        # Draw inventory (if open)
-        inventory.draw(screen)
+        # Inventory (draws to logical)
+        inventory.draw(logical)
 
+        # Scale logical → real window with letterboxing
+        blit_letterboxed(logical, real_screen)
         pygame.display.update()
