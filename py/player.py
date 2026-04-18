@@ -5,11 +5,13 @@ import os  # Need this for the path joining
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, tile_size=48):
         super().__init__()
-        self.name = "Hero" # Use a string here instead of the 'name' import
+        self.name = "Kim" 
         
         # 1. Overworld Data
         self.grid_x = x
         self.grid_y = y
+        self.x = x
+        self.y = y
         self.tile_size = tile_size
         self.image = pygame.Surface((tile_size, tile_size))
         self.image.fill((0, 255, 0)) 
@@ -18,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         # 2. Stats
         self.level = 1
         self.xp = 0
+        self.xp_to_next_level = 100
         self.max_hp = 100
         self.hp = 100
         self.attack = 15
@@ -59,6 +62,7 @@ class Player(pygame.sprite.Sprite):
             
             if current_level_str in xp_requirements:
                 req = xp_requirements[current_level_str]
+                self.xp_to_next_level = req
                 if self.xp >= req:
                     self.level += 1
                     self.attack += 5

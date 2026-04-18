@@ -29,13 +29,13 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     # --- Local Settings ---
     if player_state is not None:
-        player_x_grid = player_state.get('player_x_grid', WORLD_COLS // 2)
-        player_y_grid = player_state.get('player_y_grid', WORLD_ROWS // 2)
-        player_x = player_state.get('player_x', player_x_grid * TILE_SIZE)
-        player_y = player_state.get('player_y', player_y_grid * TILE_SIZE)
-        direction = player_state.get('direction', None)
-        camera_x = player_state.get('camera_x', 0)
-        camera_y = player_state.get('camera_y', 0)
+        player_x_grid = player_state.x 
+        player_y_grid = player_state.y
+        player_x = player_x_grid * TILE_SIZE
+        player_y = player_y_grid * TILE_SIZE
+        direction = None
+        camera_x = 0
+        camera_y = 0
     else:
         player_x_grid = WORLD_COLS // 2
         player_y_grid = WORLD_ROWS // 2
@@ -50,8 +50,8 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     # Store the initial target position so it doesn't drift each re-entry.
     # Only set it once based on the ORIGINAL spawn, not the restored position.
-    target_x_grid = player_state.get('target_x_grid', player_x_grid + 5) if player_state else player_x_grid + 5
-    target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
+    target_x_grid = player_x_grid + 5
+    target_y_grid = player_y_grid
 
     # LOL its hardcoded rn but idc use for loops or wtv to make walls and stuff later, I kinda just wanted to test the battle trigger so I threw this together real quick
     tile_grid, collision_tiles = build_cave_map(WORLD_COLS, WORLD_ROWS)
@@ -67,17 +67,9 @@ def run_overworld(screen, inventory=None, player_state=None):
         collision_tiles.add((npc.grid_x, npc.grid_y))
 
     def build_state():
-        return {
-            'player_x_grid': player_x_grid,
-            'player_y_grid': player_y_grid,
-            'player_x': player_x,
-            'player_y': player_y,
-            'direction': direction,
-            'camera_x': camera_x,
-            'camera_y': camera_y,
-            'target_x_grid': target_x_grid,
-            'target_y_grid': target_y_grid,
-        }
+        player_state.x = player_x_grid
+        player_state.y = player_y_grid
+        return player_state
 
     def clamp_camera(px, py):
         
@@ -306,6 +298,6 @@ def run_overworld(screen, inventory=None, player_state=None):
         screen.blit(text, (10, 10))
 
         # Draw inventory (if open)
-        inventory.draw(screen)
+        inventory.draw(screen, player_state)
 
         pygame.display.update()

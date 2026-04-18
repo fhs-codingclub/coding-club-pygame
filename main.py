@@ -44,10 +44,8 @@ def play(screen):
     vol = pygame.mixer.music.get_volume()
     print("overworld Volume is set to:", vol)
 
-    player = Player(5, 5)
-
+    player_state = Player(50, 50)
     inventory = None
-    player_state = None
 
     while True:
         result, inventory, player_state = run_overworld(screen, inventory, player_state)
@@ -57,15 +55,10 @@ def play(screen):
         elif result in ("START_BATTLE", "RANDOM_BATTLE"):
             
             # Keep state of player fix for bug
-            saved_state = dict(player_state) if player_state else None
             saved_inventory = inventory
 
-            battle_result = start_battle(screen, player)
+            battle_result = start_battle(screen, player_state)
             pygame.display.set_caption("Adventure Time!")
-
-            # Restore the players state 
-            player_state = saved_state
-            inventory = saved_inventory
 
             if battle_result == "QUIT":
                 return

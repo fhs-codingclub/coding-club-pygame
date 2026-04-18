@@ -162,7 +162,7 @@ class InventorySystem:
         elif self.weapon_space.collidepoint(mouse_pos):
             self.inventory_hover = 22
     
-    def draw(self, screen):
+    def draw(self, screen, player):
         if not self.is_open:
             return
         
@@ -170,12 +170,19 @@ class InventorySystem:
         
         # Draw stats panel
         pygame.draw.rect(screen, GRAY, (310*UI, 50*UI, 90*UI, 200*UI))
-        stats_text1 = self.font4.render(f"Attack: {self.attack}", True, (0, 0, 0))
-        stats_text2 = self.font4.render(f"Defense: {self.defense}", True, (0, 0, 0))
-        stats_text3 = self.font4.render(f"Health: {self.health}/{self.maxhealth}", True, (0, 0, 0))
+
+        stats_text1 = self.font4.render(f"Attack: {player.attack}", True, (0, 0, 0))
+        stats_text2 = self.font4.render(f"Defense: {player.defense}", True, (0, 0, 0))
+        stats_text3 = self.font4.render(f"Health: {player.hp}/{player.max_hp}", True, (0, 0, 0))
+
+        level_text = self.font4.render(f"Level: {player.level}", True, (255, 255, 255))
+        xp_text = self.font4.render(f"XP: {player.xp}/{player.xp_to_next_level}", True, (200, 200, 200))
+
         screen.blit(stats_text1, (320*UI, 60*UI))
         screen.blit(stats_text2, (320*UI, 85*UI))
         screen.blit(stats_text3, (320*UI, 110*UI))
+        screen.blit(level_text, (320*UI, 135*UI))
+        screen.blit(xp_text, (320*UI, 160*UI))
         
         # Draw main inventory panel
         pygame.draw.rect(screen, GRAY, (50*UI, 75*UI, 250*UI, 150*UI))
