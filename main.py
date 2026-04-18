@@ -47,8 +47,8 @@ def play(screen):
 
     player_state = Player(50, 50)
     inventory = InventorySystem(WIDTH, HEIGHT)
-    inventory.add_item_by_name("Quick Sheath")
-
+    inventory.add_item_by_name("Basic Health Potion")
+    player_state.hp = 50  # Start with lower HP to test healing
     while True:
         result, inventory, player_state = run_overworld(screen, inventory, player_state)
 

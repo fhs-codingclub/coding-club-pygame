@@ -128,7 +128,7 @@ def run_overworld(screen, inventory=None, player_state=None):
                 return ("QUIT", inventory, build_state())
 
             # Let inventory handle its events first
-            if inventory.handle_event(event):
+            if inventory.handle_event(event, player_state):
                 continue  # Event was consumed by inventory
 
             # Grid Movement Input (only when inventory is closed)

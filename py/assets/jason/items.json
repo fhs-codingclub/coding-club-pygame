@@ -1,4 +1,7 @@
 {
+    "Types of Items": {
+        "Types": "weapon, armor, healing"
+    },
     "Quick Sheath": {
         "description": "Lets you attack twice in one turn",
         "type": "combat_buff",
@@ -10,5 +13,11 @@
         "type": "world_ability",
         "attribute": "can_push",
         "value": true
+    },
+    "Basic Health Potion": {
+        "description": "Restores 50 health",
+        "type": "healing",
+        "attribute": "health_restore",
+        "value": 20
     }
 }
