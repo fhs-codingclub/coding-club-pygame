@@ -381,36 +381,29 @@ class BattleSystem:
         if self.message_timer > 0:
             self.message_timer -= 1
             
-            # When the timer hits zero, decide what happens next
             if self.message_timer == 0:
-                
-                # 1. If we were in victory/defeat, the battle MUST end now
-                if self.state == "victory":
-                    self.battle_over = True
-                    return
-                elif self.state == "defeat":
+                # 1. IMMEDIATE EXIT: If timer hits 0 on victory/defeat, stop everything
+                if self.state == "victory" or self.state == "defeat":
                     self.battle_over = True
                     return
 
-                # 2. Check if the player's action killed the enemy
+                # 2. Transition from Player Animation to Enemy Turn
                 if self.state == "animating":
                     if not self.enemy.is_alive():
-                        self.player.gain_xp(100)  # Runs ONCE here
+                        self.player.gain_xp(100) 
                         self.message = "Enemy defeated!"
                         self.state = "victory"
-                        self.message_timer = 90   # Show message for 1.5 seconds
+                        self.message_timer = 90
                     else:
-                        # Enemy is still alive, let them take their turn
                         self.enemy_turn()
                 
-                # 3. Check if the enemy's action killed the player
+                # 3. Transition from Enemy Turn back to Menu
                 elif self.state == "enemy_turn":
                     if not self.player.is_alive():
                         self.message = "You were defeated..."
                         self.state = "defeat"
                         self.message_timer = 90
                     else:
-                        # Everyone is still alive, back to the menu
                         self.message = ""
                         self.state = "menu"
         
@@ -432,18 +425,17 @@ class BattleSystem:
                 self.handle_input(event)
 
             self.update()
-            self.draw()
 
-            pygame.display.flip()
-            self.clock.tick(60)
-            
+            # CHECK EXIT HERE: Before we draw or flip the screen!
             if self.battle_over:
                 if self.state == "victory":
                     return "WIN"
                 elif self.state == "defeat":
                     return "LOSE"
-        
-        return "QUIT"
+
+            self.draw()
+            pygame.display.flip()
+            self.clock.tick(60)
 
 
 def run_battle(game_screen, player):

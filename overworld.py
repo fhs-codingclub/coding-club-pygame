@@ -50,8 +50,8 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     # Store the initial target position so it doesn't drift each re-entry.
     # Only set it once based on the ORIGINAL spawn, not the restored position.
-    target_x_grid = player_x_grid + 5
-    target_y_grid = player_y_grid
+    target_x_grid = 60
+    target_y_grid = 50
 
     # LOL its hardcoded rn but idc use for loops or wtv to make walls and stuff later, I kinda just wanted to test the battle trigger so I threw this together real quick
     tile_grid, collision_tiles = build_cave_map(WORLD_COLS, WORLD_ROWS)
