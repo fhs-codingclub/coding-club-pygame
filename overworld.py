@@ -104,19 +104,16 @@ def run_overworld(real_screen, inventory=None, player_state=None):
             return pygame.transform.scale(img, (size, size))
         except Exception:
             return None
-<<<<<<< HEAD
     
     tile_floor  = load_tile(os.path.join("py", "assets","img", "limestone_floor.png"), TILE_SIZE)
     tile_wall   = load_tile(os.path.join("py", "assets", "img", "Stone_wall.png"), TILE_SIZE)
     tile_edge   = load_tile(os.path.join("py", "assets", "img", "Stone_frame.png"), TILE_SIZE)
     tile_lime_edge = load_tile(os.path.join("py", "assets", "img", "Limestone_frame.png"), TILE_SIZE)
-=======
 
     tile_floor     = load_tile(os.path.join("assets", "img", "limestone_floor.png"), TILE_SIZE)
     tile_wall      = load_tile(os.path.join("assets", "img", "Stone_wall.png"), TILE_SIZE)
     tile_edge      = load_tile(os.path.join("assets", "img", "Stone_frame.png"), TILE_SIZE)
     tile_lime_edge = load_tile(os.path.join("assets", "img", "Limestone_frame.png"), TILE_SIZE)
->>>>>>> 8f8cd5b90ca3798bf12080b02e8b7ee020b5e1ef
 
     player_sprite = None
     possible_paths = [

@@ -60,31 +60,6 @@ class Combatant:
     def is_alive(self):
         return self.hp > 0
 
-
-<<<<<<< HEAD
-=======
-class Player(Combatant):
-    def __init__(self):
-        invent = inventory.InventorySystem()
-        super().__init__("Hero", invent.maxhealth, invent.attack, invent.defense)
-        self.items = {"Hamburger": 3, "Lifeup": 1}
-        self.hp = invent.health
-
-    def use_item(self, item_name):
-        if item_name in self.items and self.items[item_name] > 0:
-            self.items[item_name] -= 1
-            if item_name == "Hamburger":
-                heal = 30
-            elif item_name == "Lifeup":
-                heal = 60
-            else:
-                heal = 20
-            self.hp = min(self.max_hp, self.hp + heal)
-            return heal
-        return 0
->>>>>>> 8f8cd5b90ca3798bf12080b02e8b7ee020b5e1ef
-
-
 class Enemy(Combatant):
     def __init__(self, image_path):
         super().__init__("Enemy", 80, 12, 3)
@@ -340,13 +315,11 @@ class BattleSystem:
         return "QUIT"
 
 
-<<<<<<< HEAD
 def run_battle(game_screen, player):
     global screen
-=======
 def run_battle(game_screen):
     global screen, logical
->>>>>>> 8f8cd5b90ca3798bf12080b02e8b7ee020b5e1ef
+
     screen = game_screen
     logical = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     init_fonts()

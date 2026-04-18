@@ -33,9 +33,6 @@ def start_battle(screen, player):
     else:
         return "QUIT"
 
-def play(screen):
-    pygame.display.set_caption("Adventure Time!")
-    pygame.mixer.music.fadeout(1000) 
 
     pygame.mixer.music.load("py/assets/moosic/Exploration_song_no_drums.mp3")
     pygame.mixer.music.play(-1)
