@@ -5,10 +5,11 @@ from loader import run_transition, WIDTH, HEIGHT
 from combat import run_battle
 from menu import main_menu
 from overworld import run_overworld
+from player import Player 
 
-def start_battle(screen):
+def start_battle(screen, player):
     pygame.mixer.music.fadeout(1000)  
-    pygame.mixer.music.load("assets/moosic/copyrightedplaceholdermusic.mp3")
+    pygame.mixer.music.load("py/assets/moosic/copyrightedplaceholdermusic.mp3")
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.2)  
     vol = pygame.mixer.music.get_volume()
@@ -16,12 +17,12 @@ def start_battle(screen):
     
     # If transition completed, start the battle
     if run_transition(screen):
-        result = run_battle(screen)
+        result = run_battle(screen, player)
         
          # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)
         try:
-            pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
+            pygame.mixer.music.load("py/assets/moosic/Exploration_song_no_drums.mp3")
             pygame.mixer.music.play(-1)
             pygame.mixer.music.set_volume(0.2)
             vol = pygame.mixer.music.get_volume()
@@ -37,12 +38,14 @@ def play(screen):
     pygame.display.set_caption("Adventure Time!")
     pygame.mixer.music.fadeout(1000) 
 
-    pygame.mixer.music.load("assets/moosic/Exploration_song_no_drums.mp3")
+    pygame.mixer.music.load("py/assets/moosic/Exploration_song_no_drums.mp3")
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.2)
     vol = pygame.mixer.music.get_volume()
     print("overworld Volume is set to:", vol)
-    
+
+    player = Player(5, 5)
+
     inventory = None
     player_state = None
 
@@ -57,7 +60,7 @@ def play(screen):
             saved_state = dict(player_state) if player_state else None
             saved_inventory = inventory
 
-            battle_result = start_battle(screen)
+            battle_result = start_battle(screen, player)
             pygame.display.set_caption("Adventure Time!")
 
             # Restore the players state 
@@ -76,7 +79,7 @@ def main():
     pygame.mixer.init()
     
     # Load music
-    pygame.mixer.music.load("assets/moosic/Main-Menu-Theme.mp3")
+    pygame.mixer.music.load("py/assets/moosic/Main-Menu-Theme.mp3")
     pygame.mixer.music.play(-1)
     vol = pygame.mixer.music.get_volume()
     print("moosic volume for menu is", vol)

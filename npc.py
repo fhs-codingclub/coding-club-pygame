@@ -5,7 +5,7 @@ class NPC(pygame.sprite.Sprite):
         super().__init__()
         # 1. Load and Crop
         try:
-            self.image = pygame.image.load("assets/img/vivi-right.png").convert_alpha()
+            self.image = pygame.image.load("py/assets/img/vivi-right.png").convert_alpha()
             self.image = pygame.transform.scale(self.image, (tile_size, tile_size))
         except Exception as e:
             print(f"Error loading NPC image: {e}")

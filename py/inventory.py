@@ -7,7 +7,7 @@ import json
 GRAY = (100, 100, 100)
 WHITE = (255, 255, 255)
 
-with open('jason/test.json', 'r') as file:
+with open('py/assets/jason/test.json', 'r') as file:
     data = json.load(file)
 
 class InventorySystem:

@@ -105,18 +105,18 @@ def run_overworld(screen, inventory=None, player_state=None):
         except Exception:
             return None
     
-    tile_floor  = load_tile(os.path.join("assets", "img", "limestone_floor.png"), TILE_SIZE)
-    tile_wall   = load_tile(os.path.join("assets", "img", "Stone_wall.png"), TILE_SIZE)
-    tile_edge   = load_tile(os.path.join("assets", "img", "Stone_frame.png"), TILE_SIZE)
-    tile_lime_edge = load_tile(os.path.join("assets", "img", "Limestone_frame.png"), TILE_SIZE)
+    tile_floor  = load_tile(os.path.join("py", "assets","img", "limestone_floor.png"), TILE_SIZE)
+    tile_wall   = load_tile(os.path.join("py", "assets", "img", "Stone_wall.png"), TILE_SIZE)
+    tile_edge   = load_tile(os.path.join("py", "assets", "img", "Stone_frame.png"), TILE_SIZE)
+    tile_lime_edge = load_tile(os.path.join("py", "assets", "img", "Limestone_frame.png"), TILE_SIZE)
 
     # --- Load player sprite once (falls back to a rectangle if not found) ---
     player_sprite = None
     possible_paths = [
-        os.path.join("assets", "img", "kim-forward.png"),
-        os.path.join("assets", "img", "player.png"),
-        os.path.join("assets/img", "player.png"),
-        os.path.join(os.path.dirname(__file__), "img", "player.png")
+        os.path.join("py", "assets", "img", "kim-forward.png"),
+        os.path.join("py", "assets", "img", "player.png"),
+        os.path.join("py", "assets", "img", "player.png"),
+        os.path.join(os.path.dirname(__file__), "py", "assets", "img", "player.png")
     ]
     for p in possible_paths:
         try:
