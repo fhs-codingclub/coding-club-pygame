@@ -48,7 +48,7 @@ def play(screen):
     player_state = Player(50, 50)
     inventory = InventorySystem(WIDTH, HEIGHT)
     inventory.add_item_by_name("Basic Health Potion")
-    player_state.hp = 50  # Start with lower HP to test healing
+    
     while True:
         result, inventory, player_state = run_overworld(screen, inventory, player_state)
 
@@ -59,10 +59,13 @@ def play(screen):
             # Keep state of player fix for bug
             saved_inventory = inventory
 
-            battle_result = start_battle(screen, player_state)
+            battle_result, player_state = start_battle(screen, player_state)
             pygame.display.set_caption("Adventure Time!")
 
             if battle_result == "QUIT":
+                return
+            if player_state.hp <= 0:
+                print("Game Over!")
                 return
 
 def main():

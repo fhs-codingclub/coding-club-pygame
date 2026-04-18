@@ -15,7 +15,7 @@
         "value": true
     },
     "Basic Health Potion": {
-        "description": "Restores 50 health",
+        "description": "Restores 20 health",
         "type": "healing",
         "attribute": "health_restore",
         "value": 20
