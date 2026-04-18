@@ -18,7 +18,7 @@ def start_battle(screen, player):
     
     # If transition completed, start the battle
     if run_transition(screen):
-        result = run_battle(screen, player)
+        result, updated_player = run_battle(screen, player)
         
          # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)
@@ -30,7 +30,7 @@ def start_battle(screen, player):
             print("overworld Volume is set to:", vol)
         except Exception:
             pass
-        return result
+        return result, updated_player
     else:
         # Transition was quit
         return "QUIT"
@@ -47,7 +47,6 @@ def play(screen):
 
     player_state = Player(50, 50)
     inventory = InventorySystem(WIDTH, HEIGHT)
-    inventory.add_item_by_name("Basic Health Potion")
     
     while True:
         result, inventory, player_state = run_overworld(screen, inventory, player_state)

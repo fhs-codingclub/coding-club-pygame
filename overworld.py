@@ -60,6 +60,11 @@ def run_overworld(screen, inventory=None, player_state=None):
         NPC("John", 53, 48, ["SUP dude", "There are many enemies here!", "Watch out for the red tiles!"], TILE_SIZE)
     ]  # NPC implementation
 
+    # Define chests: [grid_x, grid_y, item_name, is_collected]
+    chests = [
+        [52, 50, "Basic Health Potion", False] 
+    ]
+
     active_npc = None  # Track which NPC we're currently talking to
 
     #Add npc's to collision tiles so player can't walk through them
@@ -254,6 +259,25 @@ def run_overworld(screen, inventory=None, player_state=None):
             (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE)
         )
         
+        # --- Draw and Handle Chests ---
+        for chest in chests:
+            gx, gy, item_name, collected = chest
+            if not collected:
+                # 1. Calculate where it goes on the screen
+                chest_sx = gx * TILE_SIZE - camera_x
+                chest_sy = gy * TILE_SIZE - camera_y
+                
+                # 2. Draw it (Gold/Yellow rectangle)
+                # You can replace this with a chest sprite later!
+                pygame.draw.rect(screen, (255, 215, 0), (chest_sx + 8, chest_sy + 8, 32, 32))
+                pygame.draw.rect(screen, (139, 69, 19), (chest_sx + 8, chest_sy + 8, 32, 32), 2) # Brown border
+                
+                # 3. Check for collision
+                if player_x_grid == gx and player_y_grid == gy:
+                    chest[3] = True  # Mark as collected so it disappears
+                    inventory.add_item_by_name(item_name)
+                    print(f"Obtained {item_name}!")
+
         # Draw NPCs (blue)
         for npc in npc_list:
             npc_screen_x = npc.grid_x * TILE_SIZE - camera_x
