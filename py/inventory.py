@@ -7,7 +7,7 @@ import json
 GRAY = (100, 100, 100)
 WHITE = (255, 255, 255)
 
-with open('py/assets/jason/test.json', 'r') as file:
+with open('py/assets/jason/items.json', 'r') as file:
     data = json.load(file)
 
 class InventorySystem:
@@ -57,6 +57,21 @@ class InventorySystem:
         self.weapon_space = pygame.Rect(60*UI, 160*UI, 35*UI, 45*UI)
         self.use_button_rect = pygame.Rect(245*UI, 255*UI, 35*UI, 20*UI)
     
+    def add_item_by_name(self, item_name):
+        # 'data' is the variable where you loaded items.json
+        if item_name in data:
+            item_info = data[item_name]
+            # Create the item list format your inventory expects:
+            # [Name, Description, Type, Value, Image/None]
+            new_item = [
+                item_name, 
+                item_info.get("description", "No description"),
+                item_info.get("type", "misc"),
+                item_info.get("value", 0),
+                None # Placeholder for image
+            ]
+            return self.add_item(new_item)
+        return False
     def add_item(self, item):
         for i in range(8):
             if self.inventory[i] == "air":
@@ -189,12 +204,24 @@ class InventorySystem:
         pygame.draw.rect(screen, GRAY, (100*UI, 250*UI, 200*UI, 50*UI))
         
         # Draw inventory slots
+        # Draw inventory slots
         for i, rect in enumerate(self.inventory_list):
             color = (200, 200, 200) if i == self.inventory_selected else WHITE
             pygame.draw.rect(screen, color, rect)
+            
+            # If the slot is NOT empty
+            # Inside your draw loop in inventory.py
             if self.inventory[i] != "air":
-                img = pygame.transform.scale(self.inventory[i][4], (int(35*UI), int(45*UI)))
-                screen.blit(img, rect.topleft)
+                # Instead of looking for an image at index [4]
+                item_name = self.inventory[i][0] # Get the name from your list
+                
+                # Draw a simple colored box as a placeholder
+                pygame.draw.rect(screen, (0, 150, 255), rect.inflate(-6, -6))
+                
+                # Draw the name of the item on top of the box
+                name_surf = self.font3.render(item_name, True, (0, 0, 0))
+                text_rect = name_surf.get_rect(center=rect.center)
+                screen.blit(name_surf, text_rect)
         
         # Draw armor slot
         pygame.draw.rect(screen, WHITE, self.armor_space)
@@ -243,7 +270,6 @@ if __name__ == "__main__":
     inventory_system.add_item(item1)
     inventory_system.add_item(item2)
     inventory_system.add_item(item3)
-    
     running = True
     while running:
         clock.tick(60)
@@ -264,5 +290,5 @@ if __name__ == "__main__":
             screen.blit(text, (WIDTH//2 - 100, HEIGHT//2))
         
         pygame.display.update()
-    
+       
     pygame.quit()

@@ -6,6 +6,7 @@ from combat import run_battle
 from menu import main_menu
 from overworld import run_overworld
 from player import Player 
+from inventory import InventorySystem
 
 def start_battle(screen, player):
     pygame.mixer.music.fadeout(1000)  
@@ -45,7 +46,8 @@ def play(screen):
     print("overworld Volume is set to:", vol)
 
     player_state = Player(50, 50)
-    inventory = None
+    inventory = InventorySystem(WIDTH, HEIGHT)
+    inventory.add_item_by_name("Quick Sheath")
 
     while True:
         result, inventory, player_state = run_overworld(screen, inventory, player_state)
