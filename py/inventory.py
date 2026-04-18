@@ -107,7 +107,7 @@ class InventorySystem:
             self.inventory_selected = 10
         else:
             self.inventory_selected = index
-            
+
     def _use_selected_item(self, player): # Added player here
         if self.inventory_selected == 10 or self.inventory[self.inventory_selected] == "air":
             return
@@ -163,6 +163,8 @@ class InventorySystem:
         # Stats Text
         screen.blit(self.font4.render(f"Attack: {player.attack}", True, (0, 0, 0)), (320*UI, 60*UI))
         screen.blit(self.font4.render(f"Health: {int(player.hp)}/{player.max_hp}", True, (0, 0, 0)), (320*UI, 110*UI))
+        screen.blit(self.font4.render(f"XP: {player.xp}/{player.xp_to_next_level}", True, (0, 0, 0)), (320*UI, 160*UI))
+        screen.blit(self.font4.render(f"Level: {player.level}", True, (0, 0, 0)), (320*UI, 210*UI))
 
         # Inventory Slots
         for i, rect in enumerate(self.inventory_list):
