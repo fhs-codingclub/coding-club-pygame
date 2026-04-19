@@ -18,7 +18,7 @@ def start_battle(screen, player, inventory_sys):
     
     # If transition completed, start the battle
     if run_transition(screen):
-        result, updated_player = run_battle(screen, player, inventory_sys, enemy_name="Ryan Gosling")  # You can choose different enemies here
+        result, updated_player = run_battle(screen, player, inventory_sys, enemy_name="Pollutabloom")  # You can choose different enemies here
         
          # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)

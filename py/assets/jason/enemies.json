@@ -22,5 +22,19 @@
     "xp_reward": 250,
     "image": "golem.png",
     "description": "A literal wall of pain."
+  },
+  "Pollutabloom": {
+    "hp": 100,
+    "attack": 12,
+    "defense": 4,
+    "xp_reward": 75,
+    "image": "Pollutabloom.png",
+    "description": "A toxic plant that can poison you.",
+    "moves": {
+      "Chomp": 50,
+      "Pollutinate": 25,
+      "Evil Plot": 15,
+      "Bloom Swap": 10
+    }
   }
 }
