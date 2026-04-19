@@ -23,14 +23,35 @@ class Player(pygame.sprite.Sprite):
         self.xp_to_next_level = 100
         self.max_hp = 100
         self.hp = 100
-        self.attack = 15
+        self.base_attack = 15
         self.defense = 5
-        self.items = {"Hamburger": 3, "Lifeup": 1}
 
-    def take_damage(self, damage):
-        actual_damage = max(1, damage - self.defense)
-        self.hp = max(0, self.hp - actual_damage)
-        return actual_damage
+        self.current_stance = "Neutral"
+        self.defending = False
+        self.stances = {
+            "Neutral":    {"def": 1.0, "atk": 1.0},
+            "Aggressive": {"def": 1.3, "atk": 1.5},
+            "Iron":       {"def": 0.5, "atk": 0.7},
+            "Berserk":    {"def": 1.8, "atk": 2.0}
+        }
+
+    @property
+    def attack(self):
+        stance_data = self.stances.get(self.current_stance, {"atk": 1.0})
+        atk_mult = stance_data.get("atk", 1.0)
+        
+        return int(self.base_attack * atk_mult)
+    
+    # In player.py inside the Player class
+
+    def take_damage(self, amount):
+        # Look up the multiplier based on the current stance
+        # .get() is safer than [], it defaults to 1.0 if the stance isn't found
+        multiplier = self.stances.get(self.current_stance, {}).get("def", 1.0)
+        
+        final_damage = int(amount * multiplier)
+        self.hp = max(0, self.hp - final_damage)
+        return final_damage
 
     def is_alive(self):
         return self.hp > 0
@@ -38,14 +59,6 @@ class Player(pygame.sprite.Sprite):
     def gain_xp(self, amount):
         self.xp += amount
         self.check_levelup()
-
-    def use_item(self, item_name):
-        if item_name in self.items and self.items[item_name] > 0:
-            self.items[item_name] -= 1
-            heal_amount = 20
-            self.hp = min(self.max_hp, self.hp + heal_amount)
-            return heal_amount
-        return 0
     
     def check_levelup(self):
         try:
@@ -63,15 +76,13 @@ class Player(pygame.sprite.Sprite):
             if current_level_str in xp_requirements:
                 req = xp_requirements[current_level_str]
                 self.xp_to_next_level = req
-                if self.xp >= req:
-                    self.level += 1
-                    self.attack += 5
-                    self.max_hp += 20
-                    self.hp = self.max_hp
-                    print(f"LEVEL UP! Now Level {self.level}")
-                    
-                    # Check again in case they have enough for another level
-                    self.check_levelup() 
+                # In Player.py inside check_levelup:
+            if self.xp >= req:
+                self.level += 1
+                self.base_attack += 5  # Change this from self.attack
+                self.defense += 2      # Let's give some defense on level up too
+                self.max_hp += 20
+                self.hp = self.max_hp
                     
         except Exception as e:
             print(f"XP JSON Error: {e}")

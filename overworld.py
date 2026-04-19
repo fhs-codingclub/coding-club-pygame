@@ -22,7 +22,7 @@ WORLD_HEIGHT = WORLD_ROWS * TILE_SIZE
 # Random encounter settings
 ENCOUNTER_CHANCE = 0  
 
-def run_overworld(screen, inventory=None, player_state=None):
+def run_overworld(screen, inventory=None, player_state=None, boss1defeated=False):
     # --- Create or use existing inventory ---
     if inventory is None:
         inventory = InventorySystem(WIDTH, HEIGHT)
@@ -128,6 +128,8 @@ def run_overworld(screen, inventory=None, player_state=None):
         clock.tick(60)
         screen.fill((26, 28, 44))  # Background for academia cave dark grey
 
+        DOOR_X, DOOR_Y = 60, 55    #Door to leave area
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return ("QUIT", inventory, build_state())
@@ -141,7 +143,7 @@ def run_overworld(screen, inventory=None, player_state=None):
 
                 nextx, nexty = player_x_grid, player_y_grid
                 potential_direction = None
-
+                     
                 if event.key == pygame.K_LEFT and player_x_grid > 0:
                     potential_direction = "left"
                     nextx -= 1
@@ -168,13 +170,19 @@ def run_overworld(screen, inventory=None, player_state=None):
                     nexty += 1
 
                 if potential_direction:
-                    if (nextx, nexty) not in collision_tiles:
+                    if nextx == DOOR_X and nexty == DOOR_Y :
+                        if boss1defeated:
+                            direction = potential_direction
+                            moving = True
+                        else:
+                            print("The door is locked. Defeat the boss to open it!")
+                            moving = False
+                    elif (nextx, nexty) not in collision_tiles:
                         direction = potential_direction
                         moving = True
-                        direction = potential_direction
-                    else: 
-                        print(f"Bumped into a wall at {nextx}, {nexty} facing {potential_direction}")
-                        pass
+                    else:
+                        print("Bumped into a wall at", nextx, nexty, "facing", potential_direction)
+                        moving = False
                 
                 elif event.key == pygame.K_SPACE:
                     if active_npc:
@@ -216,6 +224,9 @@ def run_overworld(screen, inventory=None, player_state=None):
 
             # When movement completes, check for random encounter
             if not moving:
+                if player_x_grid == DOOR_X and player_y_grid == DOOR_Y:
+                    return ("WIN_GAME", inventory, build_state())
+                
                 if random.random() < ENCOUNTER_CHANCE:
                     return ("RANDOM_BATTLE", inventory, build_state())
                 
@@ -304,6 +315,17 @@ def run_overworld(screen, inventory=None, player_state=None):
             prompt = small_font.render("SPACE to continue...", True, (150, 150, 150))
             screen.blit(prompt, (box_rect.x + 12, box_rect.y + 72))
 
+        # Draw door
+        door_sx = DOOR_X * TILE_SIZE - camera_x
+        door_sy = DOOR_Y * TILE_SIZE - camera_y
+        if not boss1defeated:
+            # Locked door (Red/Brown)
+            pygame.draw.rect(screen, (139, 69, 19), (door_sx, door_sy, TILE_SIZE, TILE_SIZE))
+            pygame.draw.rect(screen, (255, 0, 0), (door_sx+10, door_sy+10, TILE_SIZE-20, TILE_SIZE-20)) # Red lock
+        else:
+            # Open door (Green/Empty)
+            pygame.draw.rect(screen, (34, 139, 34), (door_sx, door_sy, TILE_SIZE, TILE_SIZE))
+        
         # Draw player (sprite if available, otherwise fallback rectangle)
         player_screen_x = player_x - camera_x
         player_screen_y = player_y - camera_y
