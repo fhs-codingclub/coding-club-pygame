@@ -18,7 +18,7 @@ def start_battle(screen, player):
     
     # If transition completed, start the battle
     if run_transition(screen):
-        result, updated_player = run_battle(screen, player)
+        result, updated_player = run_battle(screen, player, enemy_name="Ryan Gosling")  # You can choose different enemies here
         
          # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)
@@ -47,12 +47,18 @@ def play(screen):
 
     player_state = Player(50, 50)
     inventory = InventorySystem(WIDTH, HEIGHT)
-    
+    boss1defeated = False
+
     while True:
-        result, inventory, player_state = run_overworld(screen, inventory, player_state)
+        result, inventory, player_state = run_overworld(screen, inventory, player_state, boss1defeated)
 
         if result == "QUIT":
             return
+        
+        elif result == "WIN_GAME":
+            print("YOU ESCAPED!")
+            return
+        
         elif result in ("START_BATTLE", "RANDOM_BATTLE"):
             
             # Keep state of player fix for bug
@@ -60,7 +66,9 @@ def play(screen):
 
             battle_result, player_state = start_battle(screen, player_state)
             pygame.display.set_caption("Adventure Time!")
-
+            
+            if battle_result == "WIN":
+                boss1defeated = True
             if battle_result == "QUIT":
                 return
             if player_state.hp <= 0:

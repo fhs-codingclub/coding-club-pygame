@@ -1,0 +1,26 @@
+{
+  "Ryan Gosling": {
+    "hp": 120,
+    "attack": 20,
+    "defense": 5,
+    "xp_reward": 100,
+    "image": "ryan.jpg",
+    "description": "He's just Ken (and very dangerous)."
+  },
+  "Cave Bat": {
+    "hp": 30,
+    "attack": 8,
+    "defense": 2,
+    "xp_reward": 25,
+    "image": "bat.png",
+    "description": "Screechy and hard to hit."
+  },
+  "Stone Golem": {
+    "hp": 150,
+    "attack": 15,
+    "defense": 12,
+    "xp_reward": 250,
+    "image": "golem.png",
+    "description": "A literal wall of pain."
+  }
+}
