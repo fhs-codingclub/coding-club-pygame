@@ -35,15 +35,18 @@ def init_fonts():
     small_font = pygame.font.Font(None, 28)
 
 class BattleSystem:
-    def __init__(self, player, enemy_name="Ryan Gosling"):
+    def __init__(self, player, inventory_sys, enemy_name="Ryan Gosling"):
         self.player = player
+        self.player_inventory = inventory_sys
         self.enemy = Enemy(enemy_name)
 
         self.state = "menu"
-        self.menu_options = ["Attack", "Items", "Defend", "Run Away"]
+        self.menu_options = ["Attack", "Items", "Stances", "Run Away"]
+        self.stance_options = ["Neutral", "Aggressive", "Iron", "Berserk"]
+        self.selected_stance = 0
         self.selected_option = 0
 
-        self.item_options = list(self.player.items.keys())
+        self.item_options = [item[0] for item in self.player_inventory.inventory if item != 'air']
         self.selected_item = 0
 
         self.message = ""
@@ -129,8 +132,21 @@ class BattleSystem:
                     color = wood_light if i == self.selected_item else wood_base
                     pygame.draw.rect(screen, color, (right_x, y, right_width, button_h), border_radius=10)
                     pygame.draw.rect(screen, wood_dark, (right_x, y, right_width, button_h), 2, border_radius=10)
-                    item_text = small_font.render(f"{item} x{self.player.items[item]}", True, WHITE)
+                    item_text = small_font.render(f"{item}", True, WHITE) # Removed the x count
                     screen.blit(item_text, item_text.get_rect(center=(right_x + right_width // 2, y + button_h // 2)))
+        elif self.state == "stances":
+            for i, stance in enumerate(self.stance_options):
+                y = start_y + i * (button_h + 8)
+                if stance == self.player.current_stance:
+                    color = (50, 200, 50) # Darker green for active
+                elif i == self.selected_stance:
+                    color = wood_light
+                else:
+                    color = wood_base
+                pygame.draw.rect(screen, color, (right_x, y, right_width, button_h), border_radius=10)
+                pygame.draw.rect(screen, wood_dark, (right_x, y, right_width, button_h), 2, border_radius=10)
+                stance_text = small_font.render(stance, True, WHITE)
+                screen.blit(stance_text, stance_text.get_rect(center=(right_x + right_width // 2, y + button_h // 2)))
         else:
             stats_y = panel_top + 10
             screen.blit(small_font.render(self.player.name, True, WHITE), (right_x, stats_y))
@@ -150,10 +166,19 @@ class BattleSystem:
 
     def handle_input(self, event):
         if event.type != pygame.KEYDOWN: return
+        
         if self.state == "menu":
-            if event.key == pygame.K_UP: self.selected_option = (self.selected_option - 1) % 4
+            if event.key == pygame.K_UP: self.selected_option = (self.selected_option - 1) % len(self.menu_options)
             elif event.key == pygame.K_DOWN: self.selected_option = (self.selected_option + 1) % 4
             elif event.key in (pygame.K_RETURN, pygame.K_z): self.execute_action(self.menu_options[self.selected_option])
+        
+        elif self.state == "stances":
+            if event.key == pygame.K_UP: self.selected_stance = (self.selected_stance - 1) % len(self.stance_options)
+            elif event.key == pygame.K_DOWN: self.selected_stance = (self.selected_stance + 1) % len(self.stance_options)
+            elif event.key in (pygame.K_RETURN, pygame.K_z): 
+                self.set_stance(self.stance_options[self.selected_stance])
+            elif event.key in (pygame.K_ESCAPE, pygame.K_x): self.state = "menu"
+
         elif self.state == "items":
             if event.key == pygame.K_UP: self.selected_item = max(0, self.selected_item - 1)
             elif event.key == pygame.K_DOWN: self.selected_item = min(len(self.item_options) - 1, self.selected_item + 1)
@@ -178,9 +203,16 @@ class BattleSystem:
                 self.shake_timer = 10
             self.message_timer = 90
             self.state = "animating"
+        elif action == "Stances":
+            self.state = "stances"
+            self.selected_stance = 0
         elif action == "Items":
-            self.item_options = [k for k, v in self.player.items.items() if v > 0]
-            if self.item_options: self.state = "items"; self.selected_item = 0
+            # Instead of looking at a dictionary, look at the inventory list
+            # Filter out 'air' so the player only sees real items
+            self.item_options = [item[0] for item in self.player_inventory.inventory if item != 'air']
+            if self.item_options: 
+                self.state = "items"
+                self.selected_item = 0
         elif action == "Defend":
             self.player.defending = True
             self.message = "Bracing for impact!"
@@ -190,11 +222,27 @@ class BattleSystem:
             self.message = "Escaped!"
             self.state = "victory"; self.message_timer = 60
 
-    def use_item(self, item_name):
-        heal = self.player.use_item(item_name)
-        self.message = f"Used {item_name}! Healed {heal}!"
+    def set_stance(self, stance_name):
+        if self.player.current_stance == stance_name:
+            self.message = f"Already in {stance_name}!"
+            return
+
+        self.player.current_stance = stance_name
+        self.message = f"Shifted to {stance_name} Stance!"
         self.message_timer = 60
-        self.state = "animating"
+        self.state = "animating" # This triggers the update() to go to enemy_turn
+    
+    def use_item(self, item_name):
+        for i, item in enumerate(self.player_inventory.inventory):
+            if item != 'air' and item[0] == item_name:
+                heal = item[3] 
+                self.player.hp = min(self.player.max_hp, self.player.hp + heal)
+                self.player_inventory.inventory[i] = 'air' 
+                
+                self.message = f"Used {item_name}! Healed {heal}!"
+                self.message_timer = 90  # Give the player time to read it
+                self.state = "animating" # This tells update() to trigger the enemy turn
+                break
 
     def update(self):
         if self.message_timer > 0:
@@ -225,10 +273,10 @@ class BattleSystem:
             self.clock.tick(60)
         return "WIN" if self.state == "victory" else "LOSE"
 
-def run_battle(game_screen, player, enemy_name="Ryan Gosling"):
+def run_battle(game_screen, player, inventory_sys, enemy_name="Ryan Gosling"):
     global screen
     screen = game_screen
     init_fonts()
-    battle = BattleSystem(player, enemy_name)
+    battle = BattleSystem(player, inventory_sys,enemy_name)
     result = battle.run()
     return result, player

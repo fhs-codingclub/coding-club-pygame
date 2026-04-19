@@ -11,14 +11,38 @@ class Combatant:
         self.name = name
         self.max_hp = max_hp
         self.hp = current_hp if current_hp is not None else max_hp
-        self.attack = attack
-        self.defense = defense
+        self.attack_stat = attack  # Base stat
+        self.defense_stat = defense # Base stat
+        
+        # Stance modifiers: (Attack Multiplier, Defense Multiplier)
+        self.STANCES = {
+            "Neutral": (1.0, 1.0),
+            "Aggressive": (1.5, 0.5), # Glass Cannon: High ATK, Low DEF
+            "Iron": (0.6, 2.0),       # Tank: Low ATK, High DEF
+            "Berserk": (2.0, 0.2)      # High Risk: Massive ATK, effectively no DEF
+        }
+        self.current_stance = "Neutral"
         self.defending = False
 
-    def take_damage(self, damage):
-        effective_defense = self.defense * 2 if self.defending else self.defense
-        actual_damage = max(1, damage - effective_defense)
+    @property
+    def attack(self):
+        # f(a) = base_attack * stance_multiplier
+        atk_mult = self.STANCES[self.current_stance][0]
+        return int(self.attack_stat * atk_mult)
+
+    def take_damage(self, incoming_damage):
+        # 1. Calculate effective defense based on stance and guarding
+        stance_def_mult = self.STANCES[self.current_stance][1]
+        guard_mult = 2.0 if self.defending else 1.0
+        
+        effective_defense = self.defense_stat * stance_def_mult * guard_mult
+        
+        # 2. Logarithmic Reduction Formula: f(d) = 100 / (100 + d)
+        reduction_factor = 100 / (100 + effective_defense)
+        
+        actual_damage = max(1, int(incoming_damage * reduction_factor))
         self.hp = max(0, self.hp - actual_damage)
+        
         return actual_damage
 
     def is_alive(self):

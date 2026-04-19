@@ -1,7 +1,7 @@
 {
   "Ryan Gosling": {
-    "hp": 120,
-    "attack": 20,
+    "hp": 200,
+    "attack": 8,
     "defense": 5,
     "xp_reward": 100,
     "image": "ryan.jpg",
