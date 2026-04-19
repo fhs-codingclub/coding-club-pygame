@@ -6,6 +6,7 @@ from combat import run_battle
 from menu import main_menu
 from overworld import run_overworld
 from player import Player 
+from inventory import InventorySystem
 
 def start_battle(screen, player):
     pygame.mixer.music.fadeout(1000)  
@@ -17,7 +18,7 @@ def start_battle(screen, player):
     
     # If transition completed, start the battle
     if run_transition(screen):
-        result = run_battle(screen, player)
+        result, updated_player = run_battle(screen, player)
         
          # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)
@@ -29,7 +30,7 @@ def start_battle(screen, player):
             print("overworld Volume is set to:", vol)
         except Exception:
             pass
-        return result
+        return result, updated_player
     else:
         # Transition was quit
         return "QUIT"
@@ -44,11 +45,9 @@ def play(screen):
     vol = pygame.mixer.music.get_volume()
     print("overworld Volume is set to:", vol)
 
-    player = Player(5, 5)
-
-    inventory = None
-    player_state = None
-
+    player_state = Player(50, 50)
+    inventory = InventorySystem(WIDTH, HEIGHT)
+    
     while True:
         result, inventory, player_state = run_overworld(screen, inventory, player_state)
 
@@ -57,17 +56,15 @@ def play(screen):
         elif result in ("START_BATTLE", "RANDOM_BATTLE"):
             
             # Keep state of player fix for bug
-            saved_state = dict(player_state) if player_state else None
             saved_inventory = inventory
 
-            battle_result = start_battle(screen, player)
+            battle_result, player_state = start_battle(screen, player_state)
             pygame.display.set_caption("Adventure Time!")
 
-            # Restore the players state 
-            player_state = saved_state
-            inventory = saved_inventory
-
             if battle_result == "QUIT":
+                return
+            if player_state.hp <= 0:
+                print("Game Over!")
                 return
 
 def main():

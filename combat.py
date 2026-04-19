@@ -1,5 +1,3 @@
-# this is VIBE CODED!! please note that
-
 import pygame
 import random
 import os
@@ -39,10 +37,10 @@ def init_fonts():
 
 
 class Combatant:
-    def __init__(self, name, max_hp, attack, defense):
+    def __init__(self, name, max_hp, attack, defense, current_hp=None):
         self.name = name
         self.max_hp = max_hp
-        self.hp = max_hp
+        self.hp = current_hp if current_hp is not None else max_hp
         self.attack = attack
         self.defense = defense
         self.defending = False
@@ -285,7 +283,16 @@ class BattleSystem:
         msg_text = font.render(msg, True, WHITE)
         screen.blit(msg_text, msg_text.get_rect(center=circle_center))
 
-    # Everything else unchanged below
+
+    def enemy_turn(self):
+        self.state = "enemy_turn" # New state
+        
+        # Calculate damage (you can use your dice module here too!)
+        damage = self.enemy.attack + random.randint(-2, 2)
+        actual_damage = self.player.take_damage(damage)
+        
+        self.message = f"{self.enemy.name} attacks for {actual_damage} damage!"
+        self.message_timer = 90 # Give the player time to read the pain
 
     def handle_input(self, event):
         if event.type != pygame.KEYDOWN:
@@ -373,22 +380,32 @@ class BattleSystem:
     def update(self):
         if self.message_timer > 0:
             self.message_timer -= 1
-            if self.message_timer == 0 and self.state not in ("victory", "defeat"):
-                # Check if enemy died
-                if not self.enemy.is_alive():
-                    self.message = "Enemy defeated!"
-                    self.player.gain_xp(100)
-                    self.state = "victory"
-                    self.message_timer = 120  # Show victory message for 2 seconds
+            
+            if self.message_timer == 0:
+                # 1. IMMEDIATE EXIT: If timer hits 0 on victory/defeat, stop everything
+                if self.state == "victory" or self.state == "defeat":
+                    self.battle_over = True
                     return
-                # Check if player died
-                if not self.player.is_alive():
-                    self.message = "You were defeated..."
-                    self.state = "defeat"
-                    self.message_timer = 120
-                    return
-                self.message = ""
-                self.state = "menu"
+
+                # 2. Transition from Player Animation to Enemy Turn
+                if self.state == "animating":
+                    if not self.enemy.is_alive():
+                        self.player.gain_xp(100) 
+                        self.message = "Enemy defeated!"
+                        self.state = "victory"
+                        self.message_timer = 90
+                    else:
+                        self.enemy_turn()
+                
+                # 3. Transition from Enemy Turn back to Menu
+                elif self.state == "enemy_turn":
+                    if not self.player.is_alive():
+                        self.message = "You were defeated..."
+                        self.state = "defeat"
+                        self.message_timer = 90
+                    else:
+                        self.message = ""
+                        self.state = "menu"
         
         # After victory/defeat message finishes, end the battle
         if self.state in ("victory", "defeat") and self.message_timer == 0:
@@ -408,18 +425,17 @@ class BattleSystem:
                 self.handle_input(event)
 
             self.update()
-            self.draw()
 
-            pygame.display.flip()
-            self.clock.tick(60)
-            
+            # CHECK EXIT HERE: Before we draw or flip the screen!
             if self.battle_over:
                 if self.state == "victory":
                     return "WIN"
                 elif self.state == "defeat":
                     return "LOSE"
-        
-        return "QUIT"
+
+            self.draw()
+            pygame.display.flip()
+            self.clock.tick(60)
 
 
 def run_battle(game_screen, player):
@@ -428,7 +444,8 @@ def run_battle(game_screen, player):
     init_fonts()
     pygame.display.set_caption("yes we're fighting ryan gosling")
     battle = BattleSystem(player)
-    return battle.run()
+    result = battle.run()
+    return result, player
 
 
 if __name__ == "__main__":

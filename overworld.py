@@ -29,13 +29,13 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     # --- Local Settings ---
     if player_state is not None:
-        player_x_grid = player_state.get('player_x_grid', WORLD_COLS // 2)
-        player_y_grid = player_state.get('player_y_grid', WORLD_ROWS // 2)
-        player_x = player_state.get('player_x', player_x_grid * TILE_SIZE)
-        player_y = player_state.get('player_y', player_y_grid * TILE_SIZE)
-        direction = player_state.get('direction', None)
-        camera_x = player_state.get('camera_x', 0)
-        camera_y = player_state.get('camera_y', 0)
+        player_x_grid = player_state.x 
+        player_y_grid = player_state.y
+        player_x = player_x_grid * TILE_SIZE
+        player_y = player_y_grid * TILE_SIZE
+        direction = None
+        camera_x = 0
+        camera_y = 0
     else:
         player_x_grid = WORLD_COLS // 2
         player_y_grid = WORLD_ROWS // 2
@@ -50,8 +50,8 @@ def run_overworld(screen, inventory=None, player_state=None):
 
     # Store the initial target position so it doesn't drift each re-entry.
     # Only set it once based on the ORIGINAL spawn, not the restored position.
-    target_x_grid = player_state.get('target_x_grid', player_x_grid + 5) if player_state else player_x_grid + 5
-    target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
+    target_x_grid = 60
+    target_y_grid = 50
 
     # LOL its hardcoded rn but idc use for loops or wtv to make walls and stuff later, I kinda just wanted to test the battle trigger so I threw this together real quick
     tile_grid, collision_tiles = build_cave_map(WORLD_COLS, WORLD_ROWS)
@@ -60,6 +60,11 @@ def run_overworld(screen, inventory=None, player_state=None):
         NPC("John", 53, 48, ["SUP dude", "There are many enemies here!", "Watch out for the red tiles!"], TILE_SIZE)
     ]  # NPC implementation
 
+    # Define chests: [grid_x, grid_y, item_name, is_collected]
+    chests = [
+        [52, 50, "Basic Health Potion", False] 
+    ]
+
     active_npc = None  # Track which NPC we're currently talking to
 
     #Add npc's to collision tiles so player can't walk through them
@@ -67,17 +72,9 @@ def run_overworld(screen, inventory=None, player_state=None):
         collision_tiles.add((npc.grid_x, npc.grid_y))
 
     def build_state():
-        return {
-            'player_x_grid': player_x_grid,
-            'player_y_grid': player_y_grid,
-            'player_x': player_x,
-            'player_y': player_y,
-            'direction': direction,
-            'camera_x': camera_x,
-            'camera_y': camera_y,
-            'target_x_grid': target_x_grid,
-            'target_y_grid': target_y_grid,
-        }
+        player_state.x = player_x_grid
+        player_state.y = player_y_grid
+        return player_state
 
     def clamp_camera(px, py):
         
@@ -136,7 +133,7 @@ def run_overworld(screen, inventory=None, player_state=None):
                 return ("QUIT", inventory, build_state())
 
             # Let inventory handle its events first
-            if inventory.handle_event(event):
+            if inventory.handle_event(event, player_state):
                 continue  # Event was consumed by inventory
 
             # Grid Movement Input (only when inventory is closed)
@@ -262,6 +259,25 @@ def run_overworld(screen, inventory=None, player_state=None):
             (target_screen_x, target_screen_y, TILE_SIZE, TILE_SIZE)
         )
         
+        # --- Draw and Handle Chests ---
+        for chest in chests:
+            gx, gy, item_name, collected = chest
+            if not collected:
+                # 1. Calculate where it goes on the screen
+                chest_sx = gx * TILE_SIZE - camera_x
+                chest_sy = gy * TILE_SIZE - camera_y
+                
+                # 2. Draw it (Gold/Yellow rectangle)
+                # You can replace this with a chest sprite later!
+                pygame.draw.rect(screen, (255, 215, 0), (chest_sx + 8, chest_sy + 8, 32, 32))
+                pygame.draw.rect(screen, (139, 69, 19), (chest_sx + 8, chest_sy + 8, 32, 32), 2) # Brown border
+                
+                # 3. Check for collision
+                if player_x_grid == gx and player_y_grid == gy:
+                    chest[3] = True  # Mark as collected so it disappears
+                    inventory.add_item_by_name(item_name)
+                    print(f"Obtained {item_name}!")
+
         # Draw NPCs (blue)
         for npc in npc_list:
             npc_screen_x = npc.grid_x * TILE_SIZE - camera_x
@@ -306,6 +322,6 @@ def run_overworld(screen, inventory=None, player_state=None):
         screen.blit(text, (10, 10))
 
         # Draw inventory (if open)
-        inventory.draw(screen)
+        inventory.draw(screen, player_state)
 
         pygame.display.update()
