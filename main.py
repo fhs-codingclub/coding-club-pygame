@@ -8,7 +8,7 @@ from overworld import run_overworld
 from player import Player 
 from inventory import InventorySystem
 
-def start_battle(screen, player, inventory_sys):
+def start_battle(screen, player, inventory_sys, enemy_name):
     pygame.mixer.music.fadeout(1000)  
     pygame.mixer.music.load("py/assets/moosic/copyrightedplaceholdermusic.mp3")
     pygame.mixer.music.play(-1)
@@ -18,7 +18,7 @@ def start_battle(screen, player, inventory_sys):
     
     # If transition completed, start the battle
     if run_transition(screen):
-        result, updated_player = run_battle(screen, player, inventory_sys, enemy_name="Pollutabloom")  # You can choose different enemies here
+        result, updated_player = run_battle(screen, player, inventory_sys, enemy_name)
         
          # After battle, restore/continue overworld music
         pygame.mixer.music.fadeout(500)
@@ -45,7 +45,7 @@ def play(screen):
     vol = pygame.mixer.music.get_volume()
     print("overworld Volume is set to:", vol)
 
-    player_state = Player(50, 50)
+    player_state = Player(2, 2)
     inventory = InventorySystem(WIDTH, HEIGHT)
     boss1defeated = False
 
@@ -63,8 +63,8 @@ def play(screen):
             
             # Keep state of player fix for bug
             saved_inventory = inventory
-
-            battle_result, player_state = start_battle(screen, player_state, inventory)
+            enemy_to_fight = player_state.last_enemy_name
+            battle_result, player_state = start_battle(screen, player_state, inventory, enemy_to_fight)
             pygame.display.set_caption("Adventure Time!")
             
             if battle_result == "WIN":

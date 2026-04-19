@@ -36,7 +36,7 @@ def init_fonts():
     small_font = pygame.font.Font(None, 28)
 
 class BattleSystem:
-    def __init__(self, player, inventory_sys, enemy_name="Ryan Gosling"):
+    def __init__(self, player, inventory_sys, enemy_name):
         self.player = player
         self.player_inventory = inventory_sys
         self.enemy = Enemy(enemy_name)
@@ -349,7 +349,7 @@ class BattleSystem:
             self.clock.tick(60)
         return "WIN" if self.state == "victory" else "LOSE"
 
-def run_battle(game_screen, player, inventory_sys, enemy_name="Ryan Gosling"):
+def run_battle(game_screen, player, inventory_sys, enemy_name):
     global screen
     screen = game_screen
     init_fonts()
