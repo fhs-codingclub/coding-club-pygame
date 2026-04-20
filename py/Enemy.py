@@ -81,7 +81,8 @@ class Enemy(Combatant):
             defense=data["defense"]
         )
         self.xp_reward = data.get("xp_reward", 0)
-
+        # Inside Enemy.__init__
+        self.moves = data.get("moves", ["Chomp"]) # Default to Chomp if moves are missing
         # 4. Handle Image Loading
         # Images are in 'assets/img/' inside the 'py' folder
         img_file = data.get("image", "placeholder.png")

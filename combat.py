@@ -10,6 +10,7 @@ from py import inventory
 from Enemy import Enemy 
 from moves import MOVES  
 from dice import roll_attack, calculate_damage, roll_dice
+from moves import ENEMY_MOVES
 
 # Screen settings
 SCREEN_WIDTH = 640
@@ -35,7 +36,7 @@ def init_fonts():
     small_font = pygame.font.Font(None, 28)
 
 class BattleSystem:
-    def __init__(self, player, inventory_sys, enemy_name="Ryan Gosling"):
+    def __init__(self, player, inventory_sys, enemy_name):
         self.player = player
         self.player_inventory = inventory_sys
         self.enemy = Enemy(enemy_name)
@@ -159,9 +160,54 @@ class BattleSystem:
 
     def enemy_turn(self):
         self.state = "enemy_turn"
-        damage = self.enemy.attack + random.randint(-2, 2)
-        actual_damage = self.player.take_damage(damage)
-        self.message = f"{self.enemy.name} attacks for {actual_damage} damage!"
+        enemy_moves_dict = self.enemy.moves
+
+
+        # --- DEBUG BLOCK ---
+        move_names = list(enemy_moves_dict.keys())
+        move_weights = list(enemy_moves_dict.values())
+        
+        # Calculate actual percentages for the console
+        total_weight = sum(move_weights)
+        debug_probs = {name: f"{(weight/total_weight)*100}%" for name, weight in enemy_moves_dict.items()}
+        print(f"DEBUG: Move Pool Probabilities: {debug_probs}")
+        # -------------------
+
+        move_name = random.choices(move_names, weights=move_weights, k=1)[0]
+        print(f"DEBUG: RNG Selected -> {move_name}")
+
+        # 1. Pick the move
+        # Since self.enemy is now an instance of your Enemy class
+        move_data = ENEMY_MOVES.get(move_name)
+        
+        # 2. Display Message
+        self.message = f"{self.enemy.name} used {move_name}! {move_data['text']}"
+        
+        # 3. Apply Effect (Universal AI switchboard)
+        effect = move_data.get("effect")
+        if effect == "poison":
+            self.player.poisoned = True
+            self.message += " You are poisoned!"
+
+        elif effect == "buff_atk":
+            self.enemy.attack_stat = int(self.enemy.attack_stat * 1.5)
+            self.message = f"{self.enemy.name}'s power surged massively!"
+
+        elif effect == "stat_swap":
+            self.enemy.attack_stat, self.enemy.defense_stat = self.enemy.defense_stat, self.enemy.attack_stat
+
+        elif effect == "recoil":
+            self.enemy.hp -= 10
+            
+        # 4. Damage Calculation
+        # Use the move's base damage + the Enemy's dynamic attack property
+        base_power = move_data.get("damage", 0)
+
+        if base_power > 0:
+            total_power = base_power + self.enemy.attack # This uses your @property!
+            
+            # Your take_damage formula handles the defense and stances automatically
+            actual_dmg = self.player.take_damage(total_power)
         self.message_timer = 90
 
     def handle_input(self, event):
@@ -245,19 +291,49 @@ class BattleSystem:
                 break
 
     def update(self):
+        if not self.player.is_alive() and self.state != "defeat":
+            self.message = "You died..."
+            self.state = "defeat"
+            self.message_timer = 90
+            return # Stop other logic so the death message stays up
+        
         if self.message_timer > 0:
             self.message_timer -= 1
-            if self.message_timer == 0:
-                if self.state in ("victory", "defeat"): self.battle_over = True; return
-                if self.state == "animating":
-                    if not self.enemy.is_alive():
-                        self.player.gain_xp(self.enemy.xp_reward)
-                        self.message = f"{self.enemy.name} defeated!"; self.state = "victory"; self.message_timer = 90
-                    else: self.enemy_turn()
-                elif self.state == "enemy_turn":
-                    if not self.player.is_alive():
-                        self.message = "You died..."; self.state = "defeat"; self.message_timer = 90
-                    else: self.message = ""; self.state = "menu"
+            
+        # ONLY proceed to the next turn state if the current message is done showing
+        if self.message_timer == 0:
+            if self.state in ("victory", "defeat"): 
+                self.battle_over = True
+                return
+                
+            if self.state == "animating":
+                if not self.enemy.is_alive():
+                    self.player.gain_xp(self.enemy.xp_reward)
+                    self.message = f"{self.enemy.name} defeated!"
+                    self.state = "victory"
+                    self.message_timer = 90
+                else: 
+                    self.enemy_turn()
+
+            # FIXED: Only start the player turn AFTER the enemy's move message timer hits 0
+            elif self.state == "enemy_turn":
+                if not self.player.is_alive():
+                    self.message = "You died..."
+                    self.state = "defeat"
+                    self.message_timer = 90
+                else: 
+                    self.start_player_turn()
+    
+    def start_player_turn(self):
+        self.state = "menu"
+        
+        # Check for poison
+        # Note: Ensure 'poisoned' is defined in your Player class
+        if hasattr(self.player, "poisoned") and self.player.poisoned:
+            poison_dmg = 5 
+            self.player.hp = max(0, self.player.hp - poison_dmg)
+            self.message = f"Poison dealt {poison_dmg} damage!"
+            self.message_timer = 60 # Brief pause so player sees the damage
 
     def run(self):
         self.battle_over = False
@@ -273,7 +349,7 @@ class BattleSystem:
             self.clock.tick(60)
         return "WIN" if self.state == "victory" else "LOSE"
 
-def run_battle(game_screen, player, inventory_sys, enemy_name="Ryan Gosling"):
+def run_battle(game_screen, player, inventory_sys, enemy_name):
     global screen
     screen = game_screen
     init_fonts()
