@@ -156,9 +156,14 @@ def run_overworld(screen, inventory=None, player_state=None, boss1defeated=False
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT: 
-                return ("QUIT", inventory, player_state)
+                pygame.quit()
+                sys.exit()
             
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    print("Escape pressed")
+                    return ("MENU", inventory, player_state)
+
                 if event.key == pygame.K_SPACE:
                     # 1. Is anyone currently talking?
                     active_npc = next((n for n in npc_list if n.is_talking), None)
