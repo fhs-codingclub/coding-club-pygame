@@ -15,13 +15,19 @@
     "image": "bat.png",
     "description": "Screechy and hard to hit."
   },
-  "Stone Golem": {
+  "Limestone Golem": {
     "hp": 150,
-    "attack": 15,
-    "defense": 12,
+    "attack": 20,
+    "defense": 15,
     "xp_reward": 250,
     "image": "golem.png",
-    "description": "A literal wall of pain."
+    "description": "A literal wall of pain.",
+    "moves": {
+      "Stoney Punch": 50,
+      "Iron Slam": 75,
+      "Shardy Intention": 15,
+      "Rerocked": 10
+    }
   },
   "Pollutabloom": {
     "hp": 100,
