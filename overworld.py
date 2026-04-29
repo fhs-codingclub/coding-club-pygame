@@ -66,8 +66,9 @@ def run_overworld(screen, inventory=None, player_state=None, boss1defeated=False
 
             # Handle NPCs
             if obj_type == "NPC":
-                dialogue = obj.properties.get("dialogue", "Hello!")
-                new_npc = NPC(obj.name or "Villager", gx, gy, [dialogue], TILE_SIZE)
+                raw_dialogue = obj.properties.get("dialogue", "Hello!")
+                dialogue_list = raw_dialogue.split('|') 
+                new_npc = NPC(obj.name or "Villager", gx, gy, dialogue_list, TILE_SIZE)
                 npc_list.append(new_npc)
                 
             # Handle Enemies
@@ -138,18 +139,55 @@ def run_overworld(screen, inventory=None, player_state=None, boss1defeated=False
         cam_y = max(0, min(py + TILE_SIZE // 2 - VIRTUAL_HEIGHT // 2, WORLD_HEIGHT - VIRTUAL_HEIGHT))
         return cam_x, cam_y
 
+    def draw_dialogue_box(screen, text):
+        # Box dimensions
+        box_rect = pygame.Rect(50, REAL_HEIGHT - 150, REAL_WIDTH - 100, 120)
+        pygame.draw.rect(screen, (0, 0, 0), box_rect) # Black background
+        pygame.draw.rect(screen, (255, 255, 255), box_rect, 3) # White border
+        
+        # Text rendering
+        font = pygame.font.SysFont("Arial", 24)
+        text_surf = font.render(text, True, (255, 255, 255))
+        screen.blit(text_surf, (box_rect.x + 20, box_rect.y + 20))
+    
     clock = pygame.time.Clock()
-
     # --- Main Loop ---
     while True:
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT: 
-                return ("QUIT", inventory, player_state)
-            inventory.handle_event(event, player_state)
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    print("Escape pressed")
+                    return ("MENU", inventory, player_state)
 
+                if event.key == pygame.K_SPACE:
+                    # 1. Is anyone currently talking?
+                    active_npc = next((n for n in npc_list if n.is_talking), None)
+                    
+                    if active_npc:
+                        # 2. If yes, try to go to the next line
+                        if not active_npc.advance_dialogue():
+                            # If advance_dialogue returns False, the chat is over
+                            active_npc.is_talking = False 
+                            print("Finished talking.")
+                    else:
+                        # 3. If no one is talking, check for a nearby NPC to start
+                        for npc in npc_list:
+                            dx = abs(player_x_grid - npc.grid_x)
+                            dy = abs(player_y_grid - npc.grid_y)
+                            if dx + dy == 1:
+                                npc.is_talking = True
+            
+            inventory.handle_event(event, player_state)
+        
+        # Make sure player can't move while the dialogue is active
+        current_dialogue_active = any(npc.is_talking for npc in npc_list)
         keys = pygame.key.get_pressed()
-        if not moving and not inventory.is_open:
+        if not moving and not inventory.is_open and not current_dialogue_active:
             next_gx, next_gy = player_x_grid, player_y_grid
             moved = False
             if keys[pygame.K_a]: next_gx -= 1; moved = True
@@ -221,5 +259,10 @@ def run_overworld(screen, inventory=None, player_state=None, boss1defeated=False
         # Draw Inventory Overlay (Pass player_state to fix the crash)
         if inventory.is_open: 
             inventory.draw(screen, player_state)
-            
+        
+        # NPC DIALOGUE
+        for npc in npc_list:
+            if npc.is_talking:
+                draw_dialogue_box(screen, npc.get_current_line())
+
         pygame.display.update()

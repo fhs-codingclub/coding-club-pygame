@@ -29,7 +29,7 @@
  <objectgroup id="3" name="Entities">
   <object id="8" name="Vivi" type="NPC" x="138" y="138" width="12" height="15">
    <properties>
-    <property name="dialogue" value="Hello!"/>
+    <property name="dialogue" value="Hello! |How is your day? |Glad to hear that! |Make sure to slay that monster!"/>
    </properties>
   </object>
   <object id="13" name="Pollutabloom" type="Enemy" x="171" y="107" width="8" height="12"/>

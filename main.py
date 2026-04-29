@@ -8,6 +8,9 @@ from overworld import run_overworld
 from player import Player 
 from inventory import InventorySystem
 
+persistent_player = Player(2, 2)
+persistent_inventory = InventorySystem(WIDTH, HEIGHT)
+
 def start_battle(screen, player, inventory_sys, enemy_name):
     pygame.mixer.music.fadeout(1000)  
     pygame.mixer.music.load("py/assets/moosic/copyrightedplaceholdermusic.mp3")
@@ -35,8 +38,8 @@ def start_battle(screen, player, inventory_sys, enemy_name):
         # Transition was quit
         return "QUIT"
 
-def play(screen):
-    pygame.display.set_caption("Adventure Time!")
+def play(screen, player_state, inventory):
+    pygame.display.set_caption("Wood Hollow Academy")
     pygame.mixer.music.fadeout(1000) 
 
     pygame.mixer.music.load("py/assets/moosic/Exploration_song_no_drums.mp3")
@@ -45,14 +48,15 @@ def play(screen):
     vol = pygame.mixer.music.get_volume()
     print("overworld Volume is set to:", vol)
 
-    player_state = Player(2, 2)
-    inventory = InventorySystem(WIDTH, HEIGHT)
     boss1defeated = False
 
     while True:
         result, inventory, player_state = run_overworld(screen, inventory, player_state, boss1defeated)
 
-        if result == "QUIT":
+        if result == "MENU":
+            return # This exits the play() function and goes back to the menu loop
+
+        elif result == "QUIT":
             return
         
         elif result == "WIN_GAME":
@@ -91,7 +95,7 @@ def main():
 
     # Run the main menu first
     surface_ref = [screen]
-    my_menu = main_menu(surface_ref, lambda: play(surface_ref[0]))
+    my_menu = main_menu(surface_ref, lambda: play(surface_ref[0], persistent_player, persistent_inventory))
     
     # Menu loop
     while my_menu.is_enabled():
