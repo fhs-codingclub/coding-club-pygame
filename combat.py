@@ -12,6 +12,7 @@ from py import inventory
 >>>>>>> 9e0d462 (fix game crash when in battle)
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'py'))
+<<<<<<< HEAD
 
 from py import inventory
 from Enemy import Enemy 
@@ -23,6 +24,11 @@ from moves import ENEMY_MOVES
 from loader import blit_letterboxed
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
 
+=======
+from dice import roll_attack, calculate_damage, roll_dice
+from loader import blit_letterboxed
+
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 # Logical resolution — game always renders at this size
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
@@ -32,7 +38,10 @@ SCREEN_HEIGHT = 480
 # logical = the 640x480 surface everything draws to
 # screen  = the real window (may be larger)
 logical = None
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 screen = None
 
 BLACK = (0, 0, 0)
@@ -153,14 +162,20 @@ class BattleSystem:
         color = GREEN if ratio > 0.5 else YELLOW if ratio > 0.25 else RED
         pygame.draw.rect(logical, color, (x, y, int(width * ratio), 20))
         pygame.draw.rect(logical, WHITE, (x, y, width, 20), 2)
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
         hp_text = small_font.render(f"{current_hp}/{max_hp}", True, WHITE)
         logical.blit(hp_text, (x + width + 10, y))
 
     def draw_battle_scene(self):
 <<<<<<< HEAD
+<<<<<<< HEAD
         screen.fill(DARK_BLUE)
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
         logical.fill(DARK_BLUE)
 
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
@@ -197,7 +212,10 @@ class BattleSystem:
 
         enemy_name = small_font.render(self.enemy.name, True, WHITE)
         logical.blit(enemy_name, (SCREEN_WIDTH // 2 - 30, 190))
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
     def draw_menu(self):
         wood_base = (120, 80, 40)
@@ -210,12 +228,17 @@ class BattleSystem:
         panel_top = SCREEN_HEIGHT - panel_height
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         pygame.draw.rect(screen, wood_base, (0, panel_top, SCREEN_WIDTH, panel_height))
         pygame.draw.rect(screen, wood_dark, (0, panel_top, SCREEN_WIDTH, panel_height), 8)
 =======
         pygame.draw.rect(logical, wood_base, (0, panel_top, SCREEN_WIDTH, panel_height))
         pygame.draw.rect(logical, wood_dark, (0, panel_top, SCREEN_WIDTH, panel_height), 8)
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+        pygame.draw.rect(logical, wood_base, (0, panel_top, SCREEN_WIDTH, panel_height))
+        pygame.draw.rect(logical, wood_dark, (0, panel_top, SCREEN_WIDTH, panel_height), 8)
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
         circle_radius = 110
         circle_center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - panel_height // 2)
@@ -234,6 +257,7 @@ class BattleSystem:
 
         n = len(self.menu_options)
         available_h = panel_height - 20
+<<<<<<< HEAD
 <<<<<<< HEAD
         button_h = min(45, (available_h - (8 * (n - 1))) // n)
         start_y = panel_top + (panel_height - (button_h * n + 8 * (n - 1))) // 2
@@ -353,6 +377,8 @@ class BattleSystem:
             elif event.key in (pygame.K_RETURN, pygame.K_z): self.use_item(self.item_options[self.selected_item])
             elif event.key in (pygame.K_ESCAPE, pygame.K_x): self.state = "menu"
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
         gap = 8
         button_h = min(45, (available_h - gap * (n - 1)) // n)
         total_btn_h = button_h * n
@@ -431,10 +457,14 @@ class BattleSystem:
                 self_damage = sum(roll_dice(2, 6))
                 self.player.hp = max(0, self.player.hp - self_damage)
 <<<<<<< HEAD
+<<<<<<< HEAD
                 self.message = f"Roll: {roll} - Critical Fail! Ouch: {self_damage}!"
 =======
                 self.message = f"Roll: {roll} - Critical Fail! Hurt yourself for {self_damage}!"
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+                self.message = f"Roll: {roll} - Critical Fail! Hurt yourself for {self_damage}!"
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
             elif attack_result['result_type'] == 'miss':
                 self.message = f"Roll: {roll} - Miss!"
             else:
@@ -444,6 +474,7 @@ class BattleSystem:
                 self.shake_timer = 10
             self.message_timer = 90
             self.state = "animating"
+<<<<<<< HEAD
 <<<<<<< HEAD
         elif action == "Stances":
             self.state = "stances"
@@ -455,6 +486,9 @@ class BattleSystem:
             if self.item_options: 
 =======
         elif action == "Items":
+=======
+        elif action == "Items":
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
             self.item_options = [k for k, v in self.player.items.items() if v > 0]
             if self.item_options:
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
@@ -494,7 +528,10 @@ class BattleSystem:
 =======
         self.state = "animating"
         self.item_options = [k for k, v in self.player.items.items() if v > 0]
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
     def update(self):
         if not self.player.is_alive() and self.state != "defeat":
@@ -516,11 +553,15 @@ class BattleSystem:
             if self.state == "animating":
 =======
             if self.message_timer == 0 and self.state not in ("victory", "defeat"):
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
                 if not self.enemy.is_alive():
                     self.player.gain_xp(self.enemy.xp_reward)
                     self.message = f"{self.enemy.name} defeated!"
                     self.state = "victory"
+<<<<<<< HEAD
 <<<<<<< HEAD
                     self.message_timer = 90
                 else: 
@@ -550,6 +591,8 @@ class BattleSystem:
         self.battle_over = False
         while not self.battle_over:
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
                     self.message_timer = 120
                     return
                 if not self.player.is_alive():
@@ -570,7 +613,10 @@ class BattleSystem:
     def run(self):
         self.battle_over = False
         while True:
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: return "QUIT"
                 self.handle_input(event)
@@ -581,11 +627,14 @@ class BattleSystem:
             pygame.display.flip()
             self.clock.tick(60)
 <<<<<<< HEAD
+<<<<<<< HEAD
         return "WIN" if self.state == "victory" else "LOSE"
 
 def run_battle(game_screen, player, inventory_sys, enemy_name):
     global screen
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
             if self.battle_over:
                 return "WIN" if self.state == "victory" else "LOSE"
@@ -595,7 +644,10 @@ def run_battle(game_screen, player, inventory_sys, enemy_name):
 
 def run_battle(game_screen):
     global screen, logical
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
     screen = game_screen
     logical = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     init_fonts()
@@ -618,5 +670,9 @@ if __name__ == "__main__":
     battle = BattleSystem()
     result = battle.run()
     print(f"Battle result: {result}")
+<<<<<<< HEAD
     pygame.quit()
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+    pygame.quit()
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144

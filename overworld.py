@@ -13,7 +13,10 @@ from Tiledmap import TiledMap
 =======
 from tilemap import build_cave_map
 from loader import blit_letterboxed
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
 def run_overworld(screen, inventory=None, player_state=None, boss1defeated=False):
     # --- 1. Resolution & Zoom Setup ---
@@ -137,6 +140,7 @@ def run_overworld(real_screen, inventory=None, player_state=None):
     camera_x, camera_y = 0, 0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     # --- Assets ---
     kim_path = os.path.join("py", "assets", "img", "kim-forward.png")
     player_sprite = pygame.transform.scale(pygame.image.load(kim_path).convert_alpha(), (TILE_SIZE, TILE_SIZE))
@@ -181,6 +185,8 @@ def run_overworld(real_screen, inventory=None, player_state=None):
     while True:
         clock.tick(60)
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
     target_x_grid = player_state.get('target_x_grid', player_x_grid + 5) if player_state else player_x_grid + 5
     target_y_grid = player_state.get('target_y_grid', player_y_grid) if player_state else player_y_grid
 
@@ -254,6 +260,39 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 
     while True:
         clock.tick(60)
+<<<<<<< HEAD
+=======
+
+        # Block of code for handling movement
+        if not moving and not inventory.is_open:
+            nextx, nexty = player_x_grid, player_y_grid
+            potential_direction = None
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LSHIFT]:
+                PLAYER_SPEED = 4
+            else:
+                PLAYER_SPEED = 2
+
+            if keys[pygame.K_LEFT] and player_x_grid > 0:
+                potential_direction = "left"
+                nextx -= 1
+            elif keys[pygame.K_RIGHT] and player_x_grid < WORLD_COLS - 1:
+                potential_direction = "right"
+                nextx += 1
+            elif keys[pygame.K_UP] and player_y_grid > 0:
+                potential_direction = "up"
+                nexty -= 1
+            elif keys[pygame.K_DOWN] and player_y_grid < WORLD_ROWS - 1:
+                potential_direction = "down"
+                nexty += 1
+
+            if potential_direction:
+                if (nextx, nexty) not in collision_tiles:
+                    direction = potential_direction
+                    moving = True
+                else:
+                    print(f"Bumped into a wall at {nextx}, {nexty} facing {potential_direction}")
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
         # Block of code for handling movement
         if not moving and not inventory.is_open:
@@ -297,16 +336,20 @@ def run_overworld(real_screen, inventory=None, player_state=None):
                     return ("MENU", inventory, player_state)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if event.key == pygame.K_SPACE:
                     # 1. Is anyone currently talking?
                     active_npc = next((n for n in npc_list if n.is_talking), None)
                     
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
             if inventory.handle_event(event):
                 continue
 
             if event.type == pygame.KEYDOWN and not moving and not inventory.is_open:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 nextx, nexty = player_x_grid, player_y_grid
                 potential_direction = None
@@ -353,6 +396,9 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 =======
                 if event.key == pygame.K_SPACE:
 >>>>>>> fa1cda7 (fixed continuous movement causing problems)
+=======
+                if event.key == pygame.K_SPACE:
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
                     if active_npc:
                         # 2. If yes, try to go to the next line
                         if not active_npc.advance_dialogue():
@@ -365,7 +411,10 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 =======
                             active_npc = None
                     else:
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
                         for npc in npc_list:
                             dx = abs(player_x_grid - npc.grid_x)
                             dy = abs(player_y_grid - npc.grid_y)
@@ -561,7 +610,10 @@ def run_overworld(real_screen, inventory=None, player_state=None):
 
         # Inventory (draws to logical)
         inventory.draw(logical)
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
         # Scale logical → real window with letterboxing
         blit_letterboxed(logical, real_screen)

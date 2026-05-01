@@ -9,6 +9,7 @@ from player import Player
 from inventory import InventorySystem
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 persistent_player = Player(2, 2)
 persistent_inventory = InventorySystem(WIDTH, HEIGHT)
 
@@ -16,6 +17,8 @@ def start_battle(screen, player, inventory_sys, enemy_name):
     pygame.mixer.music.fadeout(1000)  
     pygame.mixer.music.load("py/assets/moosic/copyrightedplaceholdermusic.mp3")
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
 def start_battle(real_screen):
     pygame.mixer.music.fadeout(1000)
@@ -26,6 +29,7 @@ def start_battle(real_screen):
     vol = pygame.mixer.music.get_volume()
     print("moosic volume for battle is", vol)
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     # If transition completed, start the battle
     if run_transition(screen):
@@ -33,11 +37,16 @@ def start_battle(real_screen):
         
          # After battle, restore/continue overworld music
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
     if run_transition(real_screen):
         result = run_battle(real_screen)
 
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
         pygame.mixer.music.fadeout(500)
         try:
             pygame.mixer.music.load("py/assets/moosic/Exploration_song_no_drums.mp3")
@@ -52,6 +61,7 @@ def start_battle(real_screen):
         return "QUIT"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def play(screen, player_state, inventory):
     pygame.display.set_caption("Wood Hollow Academy")
     pygame.mixer.music.fadeout(1000) 
@@ -59,6 +69,9 @@ def play(screen, player_state, inventory):
     pygame.mixer.music.load("py/assets/moosic/Exploration_song_no_drums.mp3")
 =======
 
+=======
+
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 def play(real_screen):
     pygame.display.set_caption("Adventure Time!")
     pygame.mixer.music.fadeout(1000)
@@ -70,6 +83,7 @@ def play(real_screen):
     print("overworld Volume is set to:", vol)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     boss1defeated = False
 
     while True:
@@ -80,6 +94,8 @@ def play(real_screen):
 
         elif result == "QUIT":
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
     inventory = None
     player_state = None
 
@@ -95,6 +111,7 @@ def play(real_screen):
         
         elif result in ("START_BATTLE", "RANDOM_BATTLE"):
 <<<<<<< HEAD
+<<<<<<< HEAD
             
             # Keep state of player fix for bug
             saved_inventory = inventory
@@ -105,13 +122,18 @@ def play(real_screen):
             if battle_result == "WIN":
                 boss1defeated = True
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
             saved_state = dict(player_state) if player_state else None
             saved_inventory = inventory
             battle_result = start_battle(real_screen)
             pygame.display.set_caption("Adventure Time!")
             player_state = saved_state
             inventory = saved_inventory
+<<<<<<< HEAD
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
             if battle_result == "QUIT":
                 return
             if player_state.hp <= 0:
@@ -119,15 +141,19 @@ def play(real_screen):
                 return
 
 
+
 def main():
     pygame.init()
     pygame.display.set_caption("Wood Hollow Academy")
     pygame.mixer.init()
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     # Load music
     pygame.mixer.music.load("py/assets/moosic/Main-Menu-Theme.mp3")
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
 
     # Start at 800x600, resizable — game content always renders at 640x480 inside
     surface_ref = [pygame.display.set_mode((800, 600), pygame.RESIZABLE)]
@@ -139,6 +165,7 @@ def main():
     print("moosic volume for menu is", vol)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Run the main menu first
     surface_ref = [screen]
     my_menu = main_menu(surface_ref, lambda: play(surface_ref[0], persistent_player, persistent_inventory))
@@ -149,6 +176,11 @@ def main():
 
     clock = pygame.time.Clock()
 >>>>>>> db0ac6f (adapt resolutions to scale "properly", have the gayme in the middle and black bars)
+=======
+    my_menu = main_menu(surface_ref, lambda: play(surface_ref[0]))
+
+    clock = pygame.time.Clock()
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
     while my_menu.is_enabled():
         events = pygame.event.get()
         for event in events:

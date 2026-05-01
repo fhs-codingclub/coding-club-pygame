@@ -172,6 +172,7 @@ class InventorySystem:
             pygame.draw.rect(screen, color, rect)
             if self.inventory[i] != "air":
 <<<<<<< HEAD
+<<<<<<< HEAD
                 pygame.draw.rect(screen, (0, 150, 255), rect.inflate(-6, -6))
                 name_surf = self.font3.render(self.inventory[i][0], True, (0, 0, 0))
                 screen.blit(name_surf, name_surf.get_rect(center=rect.center))
@@ -188,6 +189,8 @@ class InventorySystem:
             pygame.draw.rect(screen, (200, 200, 200), self.use_button_rect)
             screen.blit(self.font2.render("Use", True, (0, 0, 0)), (247*UI, 258*UI))
 =======
+=======
+>>>>>>> 10b6f2017079864adce99cfbd4527ec34c207144
                 img = pygame.transform.scale(pygame.image.load(self.inventory[i][4]), (int(35*UI), int(45*UI)))
                 screen.blit(img, rect.topleft)
         
