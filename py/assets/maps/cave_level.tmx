@@ -6,18 +6,18 @@
    <image width="32" height="32" source="Stone_frame.png"/>
   </tile>
   <tile id="1">
-   <image width="100" height="100" source="Stone_wall.png"/>
+   <image width="32" height="32" source="Stone_wall.png"/>
   </tile>
   <tile id="2">
    <image width="32" height="32" source="Limestone_frame.png"/>
   </tile>
   <tile id="3">
-   <image width="100" height="100" source="Limestone_floor.png"/>
+   <image width="32" height="32" source="Limestone_floor.png"/>
   </tile>
  </tileset>
  <layer id="1" name="Background" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYKQyZqYSHjVv1LxR80bNGzWPuuZREwMA2iQEGQ==
+   eJxjZGBgYKQyZoZiZDY5GJt5lJiJTT8tzCPXnfj00cI8YuORGuFPC/NwhT0l8TmYzCM1PsiJU0Lmket3ephHKR6p5lETAwDQ/QPP
   </data>
  </layer>
  <objectgroup id="2" name="Collision">
