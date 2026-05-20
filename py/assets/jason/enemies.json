@@ -9,9 +9,9 @@
   },
   "Cave Bat": {
     "hp": 30,
-    "attack": 8,
+    "attack": 10,
     "defense": 2,
-    "xp_reward": 25,
+    "xp_reward": 50,
     "image": "bat.png",
     "description": "Screechy and hard to hit."
   },
@@ -24,10 +24,10 @@
     "description": "A literal wall of pain."
   },
   "Pollutabloom": {
-    "hp": 100,
-    "attack": 12,
+    "hp": 50,
+    "attack": 6,
     "defense": 4,
-    "xp_reward": 75,
+    "xp_reward": 50,
     "image": "Pollutabloom.png",
     "description": "A toxic plant that can poison you.",
     "moves": {
