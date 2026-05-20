@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
  <tileset firstgid="1" name="pygame" tilewidth="100" tileheight="100" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
-   <image source="Stone_frame.png" width="32" height="32"/>
+   <image width="32" height="32" source="Stone_frame.png"/>
   </tile>
   <tile id="1">
-   <image source="Stone_wall.png" width="100" height="100"/>
+   <image width="100" height="100" source="Stone_wall.png"/>
   </tile>
   <tile id="2">
-   <image source="Limestone_frame.png" width="32" height="32"/>
+   <image width="32" height="32" source="Limestone_frame.png"/>
   </tile>
   <tile id="3">
-   <image source="Limestone_floor.png" width="100" height="100"/>
+   <image width="100" height="100" source="Limestone_floor.png"/>
   </tile>
  </tileset>
  <layer id="1" name="Background" width="20" height="20">
@@ -27,13 +27,13 @@
   <object id="6" x="610" y="10" width="33" height="626"/>
  </objectgroup>
  <objectgroup id="3" name="Entities">
-  <object id="8" name="Vivi" type="NPC" x="138" y="138" width="12" height="15">
+  <object id="8" name="Vivi" type="NPC" x="297" y="105" width="12" height="15">
    <properties>
     <property name="dialogue" value="Hello! |How is your day? |Glad to hear that! |Make sure to slay that monster!"/>
    </properties>
   </object>
-  <object id="13" name="Pollutabloom" type="Enemy" x="171" y="107" width="8" height="12"/>
-  <object id="15" name="Potion Chest" type="Chest" x="72" y="138" width="14" height="13">
+  <object id="13" name="Pollutabloom" type="Enemy" x="392" y="108.5" width="10" height="12"/>
+  <object id="15" name="Potion Chest" type="Chest" x="424" y="107" width="14" height="13">
    <properties>
     <property name="item_name" value="Basic Health Potion"/>
    </properties>
