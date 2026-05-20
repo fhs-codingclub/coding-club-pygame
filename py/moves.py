@@ -6,9 +6,9 @@ MOVES = {
 }
 
 ENEMY_MOVES = {
-    "Pollutinate": {"damage": 15, "effect": "poison", "text": "sprays toxic spores!"},
+    "Pollutinate": {"damage": 7, "effect": "poison", "text": "sprays toxic spores!"},
     "Bloom Swap":  {"damage": 0,  "effect": "stat_swap", "text": "switches its faces!"},
-    "Chomp":       {"damage": 20, "effect": "none", "text": "bites down hard!"},
+    "Chomp":       {"damage": 15, "effect": "none", "text": "bites down hard!"},
     "Evil Plot":   {"damage": 0,  "effect": "buff_atk", "text": "is planning something wicked..."},
-    "Reject":      {"damage": 5,  "effect": "recoil", "text": "spits out nasty gunk!"}
+    "Reject":      {"damage": 7,  "effect": "recoil", "text": "spits out nasty gunk!"}
 }
