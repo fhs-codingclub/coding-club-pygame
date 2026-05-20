@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="80" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
  <tileset firstgid="1" name="pygame" tilewidth="100" tileheight="100" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -15,9 +15,9 @@
    <image width="32" height="32" source="Limestone_floor.png"/>
   </tile>
  </tileset>
- <layer id="1" name="Background" width="20" height="20">
+ <layer id="1" name="Background" width="80" height="80">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYKQyZoZiZDY5GJt5lJiJTT8tzCPXnfj00cI8YuORGuFPC/NwhT0l8TmYzCM1PsiJU0Lmket3ephHKR6p5lETAwDQ/QPP
+   eJztmAuKwzAMBdvu/e+8BLZsCI7t6Mm2lMyAoWmDZE8Vf/J+vV5vx/Y0tjH//LXP7rOl4U9z+HR/ag3i778GLR5r/j6D2mqO/pQ6bPnzJoLTmr9WW+3vLM9Mh2f+Wi2qv9m5FH9Hh1H8zcxn9VeqQfzN9Xc253uttzMcXvHXWkN6/R1d9Hq66nC2P8uaa93/WbkSY4U/ZQ1pnT+8xxPBYclfre5qv63YP3vco3Dmr1RjpWfYctbyOjNk8Hd0ZJ3/Sqhj63E/21+Ppyj+emOMPNMp+z9Pf8dnubQnLF33ehnl0PPdveqv9V3tnqv57kDLn+W6le9ODmvPryXGiPvvDv7sWOsVh+P33XfD68zyjXVHes9/XnnuwghHPTmzs8LbPndWVnrb9yETEZztidKPHiJ5+xKtPzVGrJ0eLQve/iLFmYHn/x0tziyijTuTP+pPg/lPA38a+NPAnwb+NPCngT8N/GngT4Pzh06kcWd7f7URzV828Gcn2vyX0V+kWPhbH2Mm+NOINP9l3LtsZOxzJPCngT87uLOTdb4GAAAAAAAAAAAAAAB4Kr+yFgX5
   </data>
  </layer>
  <objectgroup id="2" name="Collision">
