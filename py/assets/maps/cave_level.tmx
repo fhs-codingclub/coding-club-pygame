@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="120" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
  <tileset firstgid="1" name="pygame" tilewidth="100" tileheight="100" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
-   <image source="Stone_frame.png" width="32" height="32"/>
+   <image width="32" height="32" source="Stone_frame.png"/>
   </tile>
   <tile id="1">
-   <image source="Stone_wall.png" width="100" height="100"/>
+   <image width="32" height="32" source="Stone_wall.png"/>
   </tile>
   <tile id="2">
-   <image source="Limestone_frame.png" width="32" height="32"/>
+   <image width="32" height="32" source="Limestone_frame.png"/>
   </tile>
   <tile id="3">
-   <image source="Limestone_floor.png" width="100" height="100"/>
+   <image width="32" height="32" source="Limestone_floor.png"/>
   </tile>
  </tileset>
- <layer id="1" name="Background" width="20" height="20">
+ <layer id="1" name="Background" width="80" height="120">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYKQyZqYSHjVv1LxR80bNGzWPuuZREwMA2iQEGQ==
+   eJzt2dtuKyEMBdC0/f9/Pi8HCSEuxtdtYiSrbYZMYNVgpv35fD4/FaL4+x+/3feciJ4Hgp/EMHoe0X7SHIyeB4ofNw93n/FrFNF2o58kD09+N43SH8V05XeKaL/V+7wNOXsdql97bwa/0fDkFxGofrMc1M4/yRpuX1/26/Nk9foYlIbqd6ohVL9xbVHXHdUwyo9Tc7n7H3esyPvf7ZlvNKXMXXPcq1wcc93bb5d3u2ueduh+sxybrWHOWtJaZxn8RiPu/meRk6t6EulHcULxW+Xg6jxk7ScNid+4lsf5rn6m+HkYRsTod3pt1Yfi116PnrOnH/XnG7+XDHfr9+YeVL92LXreSFF+MjuOXxmu7U5+7Xr0+KO8UCLag2NEbZT8o/Q5vT/aa+am0Sj3kfi166+59XOT9kH2s3Lr5ybtg+ZnbTbOTdoHyc/LrbVX/dAik59W08gtSh+un8X5Ee1sQulzOv/t5sn9X7DW+Zc7L80+XL8buxfzj7v+bnMvcv/zqCu3+WeVey/Wj9HAMvcy+1FzkGr3TX6nPhw/yflFqyH6cXLwtv5qNQQ/Sf3gGHrUTG6djfK7MfTOP637WPtR60n5yf085611HxQ/zRzUuI/V/sepId41WMtP0m817/I799vVTCs/tP1Peu7ZzRN572tz97rHKv+0/LKeX6z8uDlIuadW8/Jb7TnafpQcRNr/LM4u0nPMjSFKUPw4+WeZgxpNI/8kfcvPtn5I/HbnSq2GXn+5fqsc1KwdqzlZ3YNbf7X9NJtn/fU6v+zWL6KfpJ+ln/Xet5vXzful4Vl7Ef2k1z3Pzmj1Q/Ls0a55nvuyPnug+3H2WI2w9Ls1pOyn0rqU0Y8y1xs76bkyk99svY1mN27UffAlv928OW5IrhF+kZGp/qKHxhqgOJYf/V43fpnt+nlr/z5mTqvXo+eP5HcynJlGzx/Nrzc8RfTcUf28xq0d3DFEW2jYcc6lfbP0R1qLs/1Vw4/STs8f0jOyh+vuLBTtJ3lG232mlufO7lW/8fMljtTce9WvH4e1n9W4v81PO77JDyUQ/HbngPLj5167X7RRVj90OwS/zGsXxW93r2gfip92fJOfxe9Da+/7Rr9bw8x7X7Rf9tqB4Ldq5cfzkz6PvhC361fjOf6luPGLHitilF/5lV/ekPhVLeH7zc7TKH+nz+Jn3TJYIvv1TfI/I49A9pPkn/U4qXbRfpL1ZT02bu31aqfaX37nMc7sVte9a1xGv911RL9+jLOzn/UYM+ffmIMItZdyNiw/7Nrbxld+svGVn2x85ScbX/nJxld+svHNvP4BARcvmA==
   </data>
  </layer>
  <objectgroup id="2" name="Collision">
@@ -27,13 +27,13 @@
   <object id="6" x="610" y="10" width="33" height="626"/>
  </objectgroup>
  <objectgroup id="3" name="Entities">
-  <object id="8" name="Vivi" type="NPC" x="138" y="138" width="12" height="15">
+  <object id="8" name="Vivi" type="NPC" x="297" y="105" width="12" height="15">
    <properties>
     <property name="dialogue" value="Hello! |How is your day? |Glad to hear that! |Make sure to slay that monster!"/>
    </properties>
   </object>
-  <object id="13" name="Pollutabloom" type="Enemy" x="171" y="107" width="8" height="12"/>
-  <object id="15" name="Potion Chest" type="Chest" x="72" y="138" width="14" height="13">
+  <object id="13" name="Pollutabloom" type="Enemy" x="392" y="108.5" width="10" height="12"/>
+  <object id="15" name="Potion Chest" type="Chest" x="424" y="107" width="14" height="13">
    <properties>
     <property name="item_name" value="Basic Health Potion"/>
    </properties>
