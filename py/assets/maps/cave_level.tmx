@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="80" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="120" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="16">
  <tileset firstgid="1" name="pygame" tilewidth="100" tileheight="100" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
@@ -15,9 +15,9 @@
    <image width="32" height="32" source="Limestone_floor.png"/>
   </tile>
  </tileset>
- <layer id="1" name="Background" width="80" height="80">
+ <layer id="1" name="Background" width="80" height="120">
   <data encoding="base64" compression="zlib">
-   eJztmIuKxCAMALt7///PR+GWW8RHmkSNOgPC1m7TOsRo+7qu6+XYTuMe889fe3/91jT82Rye7s+ag/j7z0GNx5q/d6c2m9SfJQ9b/p4g+X8EpzV/rTbbX+m6kQ5L/lotqj/rtU+x+Esdzqh/s+uj1l8uB73zzzKHNffUMNNfKU+s+RTVX2sNkfpLXUg9SR3O8qdZc7X1T0vk+vd0z5c6bb1/eI+nlqe97pmS81fLu9o5z/VDQmR/uRzLzWHNXPKaZyv4Sx1p618O69hK7mf6k3iK4q8Uo7Qf6oFl/+fpL53LOQe5Y4m/7/jeeH67t/pr9dX+U4or6V+Vlj/Ncanv07+Tw9r81cSo9UnOnQj+9Ej2L9JrTqPmoeXnRH9PvxtI34V2wmvMkvzbyaF3Xkji7OCv13za3V/vOrSjv5G1ezd/o+v1rv6itVXwfFav3FrNX7S9yUr+bvCnh/yz4V3/WD/6xiL/bLHwZ4uFP1ss/Nli7egvYluF0fk3Ms4I8Gdj9PvHyDijiDTu1erfTTR/q4E/PdHq34r+IsXC3/wYI8GfjUj1b8W9y82KzxwJ/NnAnx7c6Vm1XgMAAAAAAAAAAAAAAJzKLyX2By8=
+   eJzt2dtuKyEMBdC0/f9/Pi8HCSEuxtdtYiSrbYZMYNVgpv35fD4/FaL4+x+/3feciJ4Hgp/EMHoe0X7SHIyeB4ofNw93n/FrFNF2o58kD09+N43SH8V05XeKaL/V+7wNOXsdql97bwa/0fDkFxGofrMc1M4/yRpuX1/26/Nk9foYlIbqd6ohVL9xbVHXHdUwyo9Tc7n7H3esyPvf7ZlvNKXMXXPcq1wcc93bb5d3u2ueduh+sxybrWHOWtJaZxn8RiPu/meRk6t6EulHcULxW+Xg6jxk7ScNid+4lsf5rn6m+HkYRsTod3pt1Yfi116PnrOnH/XnG7+XDHfr9+YeVL92LXreSFF+MjuOXxmu7U5+7Xr0+KO8UCLag2NEbZT8o/Q5vT/aa+am0Sj3kfi166+59XOT9kH2s3Lr5ybtg+ZnbTbOTdoHyc/LrbVX/dAik59W08gtSh+un8X5Ee1sQulzOv/t5sn9X7DW+Zc7L80+XL8buxfzj7v+bnMvcv/zqCu3+WeVey/Wj9HAMvcy+1FzkGr3TX6nPhw/yflFqyH6cXLwtv5qNQQ/Sf3gGHrUTG6djfK7MfTOP637WPtR60n5yf085611HxQ/zRzUuI/V/sepId41WMtP0m817/I799vVTCs/tP1Peu7ZzRN572tz97rHKv+0/LKeX6z8uDlIuadW8/Jb7TnafpQcRNr/LM4u0nPMjSFKUPw4+WeZgxpNI/8kfcvPtn5I/HbnSq2GXn+5fqsc1KwdqzlZ3YNbf7X9NJtn/fU6v+zWL6KfpJ+ln/Xet5vXzful4Vl7Ef2k1z3Pzmj1Q/Ls0a55nvuyPnug+3H2WI2w9Ls1pOyn0rqU0Y8y1xs76bkyk99svY1mN27UffAlv928OW5IrhF+kZGp/qKHxhqgOJYf/V43fpnt+nlr/z5mTqvXo+eP5HcynJlGzx/Nrzc8RfTcUf28xq0d3DFEW2jYcc6lfbP0R1qLs/1Vw4/STs8f0jOyh+vuLBTtJ3lG232mlufO7lW/8fMljtTce9WvH4e1n9W4v81PO77JDyUQ/HbngPLj5167X7RRVj90OwS/zGsXxW93r2gfip92fJOfxe9Da+/7Rr9bw8x7X7Rf9tqB4Ldq5cfzkz6PvhC361fjOf6luPGLHitilF/5lV/ekPhVLeH7zc7TKH+nz+Jn3TJYIvv1TfI/I49A9pPkn/U4qXbRfpL1ZT02bu31aqfaX37nMc7sVte9a1xGv911RL9+jLOzn/UYM+ffmIMItZdyNiw/7Nrbxld+svGVn2x85ScbX/nJxld+svHNvP4BARcvmA==
   </data>
  </layer>
  <objectgroup id="2" name="Collision">
